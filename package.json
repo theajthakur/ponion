@@ -1,0 +1,25 @@
+{
+  "name": "ponion",
+  "version": "1.0.0",
+  "description": "An food delivery APP",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/theajthakur/ponion.git"
+  },
+  "keywords": [
+    "ZOMATO",
+    "food",
+    "delivery",
+    "swiggy"
+  ],
+  "author": "VIJAY THAKUR",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theajthakur/ponion/issues"
+  },
+  "homepage": "https://github.com/theajthakur/ponion#readme"
+}
