@@ -72,3 +72,53 @@ const handleCreateNewMenuItem = async (req, res) => {
     });
   }
 };
+
+const handleRemoveMenuItem = async (req, res) => {
+  try {
+    const { itemId } = req.body;
+    if (!itemId) {
+      return res.status(400).json({
+        status: "error",
+        message: "Menu item ID is required.",
+      });
+    }
+
+    const updatedRestaurant = await Restaurant.findOneAndUpdate(
+      { owner: req._id },
+      { $pull: { menu: { _id: itemId } } },
+      { new: true }
+    );
+
+    if (!updatedRestaurant) {
+      return res.status(404).json({
+        status: "error",
+        message: "Restaurant not found for the current user.",
+      });
+    }
+
+    const itemExists = updatedRestaurant.menu.some(
+      (item) => item._id.toString() === itemId
+    );
+
+    if (itemExists) {
+      return res.status(400).json({
+        status: "error",
+        message: "Item could not be removed.",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: `Item removed successfully!`,
+      updatedMenu: updatedRestaurant.menu,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "There was a problem while removing the menu item.",
+      reason: error.message || "Menu item removal failed",
+    });
+  }
+};
+
+module.exports = { handleRemoveMenuItem, handleRemoveMenuItem };
