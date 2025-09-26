@@ -13,9 +13,11 @@ app.use(cookieParser());
 connectDB();
 
 const authRoute = require("./routes/auth/auth.route");
-const checkAuth = require("./middlewares/auth.middleware");
 app.use("/auth", authRoute);
+const checkAuth = require("./middlewares/auth.middleware");
 app.use(checkAuth);
+const profileRoute = require("./routes/user/profile.route");
+app.use("/user/profile", profileRoute);
 
 app.listen(PORT, () => {
   console.log(`Server started on PORT: http://localhost:${PORT}`);
