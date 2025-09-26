@@ -30,7 +30,7 @@ const handleAttemptLogin = async (req, res) => {
 };
 
 const handleNewUser = async (req, res) => {
-  const { email, password, name, gender = "male" } = req.body;
+  const { email, password, name, gender = "other" } = req.body;
   if (!email || !password || !name || !gender)
     return res.json({
       status: "error",
