@@ -22,6 +22,7 @@ const restaurantSchema = new mongoose.Schema({
       dietType: {
         type: String,
         enum: ["veg", "egg", "non_veg"],
+        required: true,
       },
     },
   ],
