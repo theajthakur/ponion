@@ -20,6 +20,13 @@ const tokenCheck = (role = "user") => {
           .json({ status: "error", message: "Invalid token" });
       }
 
+      if (verified.status != "active")
+        return res.status(401).json({
+          status: "error",
+          message: "Your account isn't active, please contact admin!",
+          reason: `Current Status: ${verified.status}`,
+        });
+
       if (role === "admin" && verified.role !== "admin") {
         return res
           .status(403)
