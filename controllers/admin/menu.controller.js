@@ -121,4 +121,25 @@ const handleRemoveMenuItem = async (req, res) => {
   }
 };
 
-module.exports = { handleRemoveMenuItem, handleRemoveMenuItem };
+const handleListMenuItems = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findOne({ owner: req._id });
+    return res.json({
+      status: "success",
+      message: "menu fetched successfully",
+      restaurant,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      status: "error",
+      message: "failed to fetch menu items!",
+    });
+  }
+};
+
+module.exports = {
+  handleRemoveMenuItem,
+  handleRemoveMenuItem,
+  handleListMenuItems,
+};

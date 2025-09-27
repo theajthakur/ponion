@@ -14,10 +14,17 @@ connectDB();
 
 const authRoute = require("./routes/auth/auth.route");
 app.use("/auth", authRoute);
-const checkAuth = require("./middlewares/auth.middleware");
+const { checkAuth, checkAuthAdmin } = require("./middlewares/auth.middleware");
+
+// Protected Routes for logged in Users
 app.use(checkAuth);
 const profileRoute = require("./routes/user/profile.route");
 app.use("/user/profile", profileRoute);
+
+// Protected Routes for Admins Only
+app.use(checkAuthAdmin);
+const menuRoute = require("./routes/admin/menu.route");
+app.use("/admin", menuRoute);
 
 app.listen(PORT, () => {
   console.log(`Server started on PORT: http://localhost:${PORT}`);
