@@ -1,9 +1,29 @@
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 const Restaurant = require("../../models/Restaurant");
 const Joi = require("joi");
+const {
+  emailVerificationTemplate,
+} = require("../../lib/template/email.verify.template");
+const sendEmail = require("../../utils/email.utils");
+const ActivationLink = require("../../models/ActivationLink");
+
+const sendVerificationEmail = async (name, userId, to) => {
+  try {
+    const subject = "Verify your PONION Account";
+    const activationId = uuidv4();
+    await ActivationLink.create({ activationId, userId });
+    const link = `${process.env.SERVER_URL}/auth/verify/${activationId}`;
+    sendEmail({ to, subject, html: emailVerificationTemplate(name, link) });
+    return true;
+  } catch (error) {
+    console.log(error, error?.message);
+    return false;
+  }
+};
 
 const handleAttemptLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -72,6 +92,7 @@ const handleNewUser = async (req, res) => {
       status: "error",
       message: "There is an error while creating your account!",
     });
+  sendVerificationEmail(name.split(" ")[0], newUser._id, email);
 
   return res.json({
     status: "success",
@@ -81,7 +102,7 @@ const handleNewUser = async (req, res) => {
 
 const restaurantUserSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(), // you can enforce stronger rules if needed
+  password: Joi.string().min(6).required(),
   name: Joi.string().min(2).max(50).required(),
   gender: Joi.string().valid("male", "female", "other").default("other"),
   restaurantName: Joi.string().min(2).max(100).required(),
