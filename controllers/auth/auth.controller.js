@@ -34,7 +34,7 @@ const handleAttemptLogin = async (req, res) => {
 
 const userSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(), // you can enforce stronger rules if needed
+  password: Joi.string().min(6).required(),
   name: Joi.string().min(2).max(50).required(),
   gender: Joi.string().valid("male", "female", "other").default("other"),
 });

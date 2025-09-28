@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../../models/User");
 
 const handleApproveRestaurent = async (req, res) => {
@@ -7,22 +8,38 @@ const handleApproveRestaurent = async (req, res) => {
     if (!ownerId) {
       return res.status(400).json({
         status: "error",
-        message: "ownerId is required",
+        message: "ownerId is required.",
+      });
+    }
+
+    // Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(ownerId)) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid ownerId format.",
       });
     }
 
     const user = await User.findById(ownerId);
+
     if (!user) {
       return res.status(404).json({
         status: "error",
-        message: "No user found with the given ownerId!",
+        message: "No user found with the given ownerId.",
       });
     }
 
     if (user.role !== "admin") {
       return res.status(403).json({
         status: "error",
-        message: "Invalid role of user! Only admins can be approved.",
+        message: "Invalid role! Only admins can be approved.",
+      });
+    }
+
+    if (user.status === "active") {
+      return res.status(200).json({
+        status: "info",
+        message: "Restaurant is already active.",
       });
     }
 
@@ -34,10 +51,12 @@ const handleApproveRestaurent = async (req, res) => {
       message: "Restaurant activated successfully!",
     });
   } catch (err) {
-    console.error("Error approving restaurant:", err);
+    console.error("Error approving restaurant:", err.message || err);
+
     return res.status(500).json({
       status: "error",
       message: "Internal server error.",
+      details: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
   }
 };

@@ -14,7 +14,12 @@ connectDB();
 
 const authRoute = require("./routes/auth/auth.route");
 app.use("/auth", authRoute);
-const { checkAuth, checkAuthAdmin } = require("./middlewares/auth.middleware");
+
+const {
+  checkAuth,
+  checkAuthAdmin,
+  checkAuthSuperAdmin,
+} = require("./middlewares/auth.middleware");
 
 // Protected Routes for logged in Users
 app.use(checkAuth);
@@ -25,6 +30,11 @@ app.use("/user/profile", profileRoute);
 app.use(checkAuthAdmin);
 const menuRoute = require("./routes/admin/menu.route");
 app.use("/admin", menuRoute);
+
+// Protected Routes for SuperAdmins Only
+app.use(checkAuthSuperAdmin);
+const restaurantRoutes = require("./routes/superadmin/restaurant.route");
+app.use("/superadmin", restaurantRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server started on PORT: http://localhost:${PORT}`);

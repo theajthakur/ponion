@@ -24,13 +24,22 @@ const tokenCheck = (role = "user") => {
         return res.status(401).json({
           status: "error",
           message: "Your account isn't active, please contact admin!",
-          reason: `Current Status: ${verified.status}`,
+          reason: `Current Status: ${verified.status} for role: ${verified.role}`,
         });
 
-      if (role === "admin" && verified.role !== "admin") {
+      if (
+        role === "admin" &&
+        !["admin", "superadmin"].includes(verified.role)
+      ) {
         return res
           .status(403)
           .json({ status: "error", message: "Admins only" });
+      }
+
+      if (role === "superadmin" && verified.role != "superadmin") {
+        return res
+          .status(403)
+          .json({ status: "error", message: "SuperAdmins only" });
       }
 
       req.user = verified; // attach decoded payload
@@ -46,5 +55,6 @@ const tokenCheck = (role = "user") => {
 
 const checkAuth = tokenCheck("user");
 const checkAuthAdmin = tokenCheck("admin");
+const checkAuthSuperAdmin = tokenCheck("superadmin");
 
-module.exports = { checkAuth, checkAuthAdmin };
+module.exports = { checkAuth, checkAuthAdmin, checkAuthSuperAdmin };
