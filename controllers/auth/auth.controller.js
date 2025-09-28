@@ -173,4 +173,73 @@ const handleNewRestaurantUser = async (req, res) => {
   }
 };
 
-module.exports = { handleAttemptLogin, handleNewUser, handleNewRestaurantUser };
+const verifyUserByEmail = async (req, res) => {
+  try {
+    const { verificationId } = req.params;
+
+    if (!verificationId || typeof verificationId !== "string") {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid or missing verification ID.",
+      });
+    }
+
+    const activation = await ActivationLink.findOne({
+      activationId: verificationId,
+    });
+    if (!activation) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid or expired verification link.",
+      });
+    }
+
+    const dateCreated = activation.createdAt;
+    const expireTime = 24 * 60 * 60 * 1000; // 1 day in ms
+    const expiryDate = new Date(dateCreated.getTime() + expireTime);
+
+    if (expiryDate < new Date()) {
+      return res.status(400).json({
+        status: "error",
+        message: "Verification link has expired.",
+      });
+    }
+
+    const user = await User.findById(activation.userId);
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found.",
+      });
+    }
+
+    if (user.status === "active") {
+      return res.status(200).json({
+        status: "success",
+        message: "Account is already activated.",
+      });
+    }
+
+    await User.updateOne({ _id: user._id }, { $set: { status: "active" } });
+    await ActivationLink.deleteOne({ activationId: verificationId });
+
+    return res.status(200).json({
+      status: "success",
+      message: "Account activated successfully!",
+    });
+  } catch (error) {
+    console.error("Error in verifyUserByEmail:", error);
+    return res.status(500).json({
+      status: "error",
+      message:
+        "Something went wrong while verifying account. Please try again later.",
+    });
+  }
+};
+
+module.exports = {
+  handleAttemptLogin,
+  handleNewUser,
+  handleNewRestaurantUser,
+  verifyUserByEmail,
+};

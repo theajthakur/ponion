@@ -22,9 +22,10 @@ const restaurantSchema = new mongoose.Schema(
     },
     menu: [
       {
-        itemName: String,
-        price: Number,
+        itemName: { type: String, required: true },
+        price: { type: Number, required: true },
         available: { type: Boolean, default: true },
+        thumbnail: { type: String },
         dietType: {
           type: String,
           enum: ["veg", "egg", "non_veg"],
