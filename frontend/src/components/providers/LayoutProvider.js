@@ -1,45 +1,22 @@
-"use client";
-
-import Image from "next/image";
-import { motion } from "framer-motion";
+import Footer from "./_components/Footer";
+import Navbar from "./_components/Navbar";
+import { Toaster } from "sonner";
 
 export default function LayoutProvider({ children }) {
   return (
-    <div className="main">
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Navbar */}
       <div className="navbar-container">
-        {" "}
-        <motion.nav
-          className="w-full bg-background shadow-md"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16 items-center">
-              <div className="flex-shrink-0">
-                <a href="/" className="text-2xl font-bold text-primary">
-                  <Image
-                    src={"/logo_text.png"}
-                    alt="PONION LOGO"
-                    width={200}
-                    height={50}
-                  />
-                </a>
-              </div>
-
-              <div className="ms-auto">
-                <a
-                  href="/login"
-                  className="px-4 py-2 rounded-md text-white bg-primary hover:bg-primary-hover transition-colors duration-200 font-medium"
-                >
-                  Login
-                </a>
-              </div>
-            </div>
-          </div>
-        </motion.nav>
+        <Navbar />
       </div>
-      <div className="main-body-container">{children}</div>
+
+      {/* Main Body */}
+      <main className="flex-1 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-6">
+        {children}
+      </main>
+
+      <Footer />
+      <Toaster position="top-right" richColors />
     </div>
   );
 }

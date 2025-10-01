@@ -1,11 +1,17 @@
+"use client";
+
+import { motion } from "framer-motion";
 import React from "react";
-import PizzaViewer from "./_components/Pizza";
 
 export default function Hero() {
   return (
-    <section className="bg-white">
+    <motion.section
+      initial={{ y: 50, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="bg-white"
+    >
       <div className="container mx-auto px-6 py-16 flex flex-col-reverse lg:flex-row items-center">
-        {/* Text Section */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Fast & Fresh Food Delivery
@@ -23,12 +29,14 @@ export default function Hero() {
             </button>
           </div>
         </div>
-
-        {/* Image Section */}
         <div className="w-full lg:w-1/2 mb-10 lg:mb-0 flex justify-center lg:justify-end">
-          <PizzaViewer />
+          <img
+            src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80"
+            alt="Delicious Food"
+            className="w-full max-w-md rounded-lg shadow-lg"
+          />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
