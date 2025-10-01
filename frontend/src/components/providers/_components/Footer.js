@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { toast } from "sonner";
-
 export default function Footer() {
   return (
     <footer className="bg-surface text-foreground border-t border-border">
@@ -12,9 +10,6 @@ export default function Footer() {
             <Image
               src={"/logo_text.png"}
               alt="PONION LOGO"
-              onClick={() => {
-                toast.success("Installed");
-              }}
               width={100}
               height={60}
             />

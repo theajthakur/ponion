@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "name": "Spicy Heaven",
+    "cuisine": "Indian",
+    "rating": 4.5,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?indian-food"
+  },
+  {
+    "id": 2,
+    "name": "Sushi World",
+    "cuisine": "Japanese",
+    "rating": 4.7,
+    "deliveryTime": 25,
+    "priceRange": "₹₹",
+    "image": "https://source.unsplash.com/400x300/?sushi"
+  },
+  {
+    "id": 3,
+    "name": "Burger Hub",
+    "cuisine": "Fast Food",
+    "rating": 4.2,
+    "deliveryTime": 20,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?burger"
+  },
+  {
+    "id": 4,
+    "name": "Pasta Palace",
+    "cuisine": "Italian",
+    "rating": 4.6,
+    "deliveryTime": 35,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?pasta"
+  },
+  {
+    "id": 5,
+    "name": "Taco Town",
+    "cuisine": "Mexican",
+    "rating": 4.3,
+    "deliveryTime": 28,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?taco"
+  },
+  {
+    "id": 6,
+    "name": "Curry Corner",
+    "cuisine": "Indian",
+    "rating": 4.4,
+    "deliveryTime": 32,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?curry"
+  },
+  {
+    "id": 7,
+    "name": "Dragon Wok",
+    "cuisine": "Chinese",
+    "rating": 4.5,
+    "deliveryTime": 27,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?chinese-food"
+  },
+  {
+    "id": 8,
+    "name": "Pizza Planet",
+    "cuisine": "Italian",
+    "rating": 4.6,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?pizza"
+  },
+  {
+    "id": 9,
+    "name": "Falafel Factory",
+    "cuisine": "Middle Eastern",
+    "rating": 4.3,
+    "deliveryTime": 25,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?falafel"
+  },
+  {
+    "id": 10,
+    "name": "Grill & Chill",
+    "cuisine": "BBQ",
+    "rating": 4.7,
+    "deliveryTime": 35,
+    "priceRange": "₹₹",
+    "image": "https://source.unsplash.com/400x300/?bbq"
+  },
+  {
+    "id": 11,
+    "name": "Vegan Vibes",
+    "cuisine": "Vegan",
+    "rating": 4.5,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?vegan-food"
+  },
+  {
+    "id": 12,
+    "name": "Kebab King",
+    "cuisine": "Middle Eastern",
+    "rating": 4.4,
+    "deliveryTime": 28,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?kebab"
+  },
+  {
+    "id": 13,
+    "name": "Noodle Nook",
+    "cuisine": "Chinese",
+    "rating": 4.3,
+    "deliveryTime": 25,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?noodles"
+  },
+  {
+    "id": 14,
+    "name": "Seafood Shack",
+    "cuisine": "Seafood",
+    "rating": 4.6,
+    "deliveryTime": 35,
+    "priceRange": "₹₹",
+    "image": "https://source.unsplash.com/400x300/?seafood"
+  },
+  {
+    "id": 15,
+    "name": "Sandwich Stop",
+    "cuisine": "Fast Food",
+    "rating": 4.2,
+    "deliveryTime": 20,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?sandwich"
+  },
+  {
+    "id": 16,
+    "name": "Biryani Bowl",
+    "cuisine": "Indian",
+    "rating": 4.7,
+    "deliveryTime": 32,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?biryani"
+  },
+  {
+    "id": 17,
+    "name": "Crepe Corner",
+    "cuisine": "French",
+    "rating": 4.4,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?crepes"
+  },
+  {
+    "id": 18,
+    "name": "Dim Sum Delight",
+    "cuisine": "Chinese",
+    "rating": 4.5,
+    "deliveryTime": 28,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?dim-sum"
+  },
+  {
+    "id": 19,
+    "name": "Bagel Bros",
+    "cuisine": "Bakery",
+    "rating": 4.3,
+    "deliveryTime": 25,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?bagel"
+  },
+  {
+    "id": 20,
+    "name": "Ramen Realm",
+    "cuisine": "Japanese",
+    "rating": 4.6,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?ramen"
+  },
+  {
+    "id": 21,
+    "name": "Steak Station",
+    "cuisine": "BBQ",
+    "rating": 4.7,
+    "deliveryTime": 40,
+    "priceRange": "₹₹",
+    "image": "https://source.unsplash.com/400x300/?steak"
+  },
+  {
+    "id": 22,
+    "name": "Salad Stop",
+    "cuisine": "Healthy",
+    "rating": 4.3,
+    "deliveryTime": 20,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?salad"
+  },
+  {
+    "id": 23,
+    "name": "Cheesecake Cafe",
+    "cuisine": "Dessert",
+    "rating": 4.5,
+    "deliveryTime": 25,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?cheesecake"
+  },
+  {
+    "id": 24,
+    "name": "Waffle Works",
+    "cuisine": "Dessert",
+    "rating": 4.4,
+    "deliveryTime": 28,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?waffle"
+  },
+  {
+    "id": 25,
+    "name": "Poke Place",
+    "cuisine": "Hawaiian",
+    "rating": 4.6,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?poke-bowl"
+  },
+  {
+    "id": 26,
+    "name": "Ice Cream Island",
+    "cuisine": "Dessert",
+    "rating": 4.7,
+    "deliveryTime": 20,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?ice-cream"
+  },
+  {
+    "id": 27,
+    "name": "Panini Palace",
+    "cuisine": "Fast Food",
+    "rating": 4.3,
+    "deliveryTime": 22,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?panini"
+  },
+  {
+    "id": 28,
+    "name": "Grilled Cheese Co.",
+    "cuisine": "Fast Food",
+    "rating": 4.2,
+    "deliveryTime": 25,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?grilled-cheese"
+  },
+  {
+    "id": 29,
+    "name": "Curry Express",
+    "cuisine": "Indian",
+    "rating": 4.5,
+    "deliveryTime": 30,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?curry"
+  },
+  {
+    "id": 30,
+    "name": "Mediterraneo",
+    "cuisine": "Mediterranean",
+    "rating": 4.6,
+    "deliveryTime": 33,
+    "priceRange": "₹",
+    "image": "https://source.unsplash.com/400x300/?mediterranean-food"
+  }
+]
