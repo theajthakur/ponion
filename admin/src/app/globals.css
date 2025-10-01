@@ -6,8 +6,19 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Colors */
+  --color-background: #f3f4f6; /* light page background */
+  --color-foreground: #111827; /* main text color */
+  --color-primary: #1e40af; /* primary blue */
+  --color-secondary: #3b82f6; /* secondary blue */
+  --color-card: #ffffff; /* card / panel background */
+  --color-border: #d1d5db; /* borders / dividers */
+  --color-success: #10b981; /* success messages */
+  --color-error: #ef4444; /* error messages */
+  --color-warning: #f59e0b; /* warnings / alerts */
+  --color-info: #0ea5e9; /* info / accent */
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
