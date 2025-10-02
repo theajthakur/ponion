@@ -6,28 +6,34 @@
 }
 
 @theme inline {
-  /* Colors */
-  --color-background: #f3f4f6; /* light page background */
-  --color-foreground: #111827; /* main text color */
-  --color-primary: #1e40af; /* primary blue */
-  --color-secondary: #3b82f6; /* secondary blue */
-  --color-card: #ffffff; /* card / panel background */
-  --color-border: #d1d5db; /* borders / dividers */
-  --color-success: #10b981; /* success messages */
-  --color-error: #ef4444; /* error messages */
-  --color-warning: #f59e0b; /* warnings / alerts */
-  --color-info: #0ea5e9; /* info / accent */
+  /* Backgrounds */
+  --color-background: #f8f9fa; /* main page background */
+  --color-surface: #ffffff; /* cards, panels, sidebar */
+  --color-accent-surface: #f1f3f5; /* hover / highlights */
+
+  /* Text */
+  --color-foreground: #212529; /* main text */
+  --color-text-secondary: #495057; /* secondary text */
+  --color-text-muted: #868e96; /* muted / placeholder */
+
+  /* Borders / Dividers */
+  --color-border: #dee2e6;
+
+  /* Primary / Action */
+  --color-primary: #1c7ed6; /* main buttons, highlights */
+  --color-primary-hover: #1971c2;
+  --color-secondary: #495057; /* secondary buttons, badges */
+  --color-secondary-hover: #343a40;
+
+  /* Status / Feedback */
+  --color-success: #37b24d;
+  --color-error: #f03e3e;
+  --color-warning: #f59f00;
+  --color-info: #339af0;
 
   /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

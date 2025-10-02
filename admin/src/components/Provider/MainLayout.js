@@ -23,7 +23,6 @@ export default function MainProvider({ children }) {
               overflowY: "auto",
             }}
           >
-            <Toolbar />
             <Box sx={{ p: 3 }}>{children}</Box>
           </Box>
         </Box>

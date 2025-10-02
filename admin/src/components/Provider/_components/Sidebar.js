@@ -26,10 +26,13 @@ import {
   LogoutOutlined,
 } from "@mui/icons-material";
 import { useAuth } from "../AuthProvider";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
 export default function Sidebar() {
+  const router = useRouter();
+
   const [open, setOpen] = useState(true);
   const { user, logout } = useAuth();
 
@@ -37,7 +40,7 @@ export default function Sidebar() {
     {
       text: "Dashboard",
       icon: <DashboardOutlined />,
-      path: "/dashboard",
+      path: "/",
       role: ["admin", "superadmin"],
     },
     {
@@ -127,6 +130,9 @@ export default function Sidebar() {
         {menuItems.map((item) => (
           <ListItem disablePadding key={item.text} sx={{ px: 2 }}>
             <ListItemButton
+              onClick={() => {
+                router.push(item.path);
+              }}
               sx={{
                 display: "flex",
                 justifyContent: open ? "flex-start" : "center",

@@ -8,17 +8,19 @@ const AuthContext = createContext();
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [userToken, setUserToken] = useState(null);
+  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("ponion_admin_token");
     if (!token) return;
+    setUserToken(token);
     try {
       const decoded = jwtDecode(token);
       if (decoded.exp && Date.now() >= decoded.exp * 1000) {
         throw new Error("Token expired");
       }
       setUser(decoded);
-      console.log("Decoded token:", decoded);
+      router.push("/");
     } catch (err) {
       console.error("Invalid token:", err);
       localStorage.removeItem("ponion_admin_token");
@@ -45,7 +47,9 @@ export default function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, loading, token: userToken }}
+    >
       {children}
     </AuthContext.Provider>
   );
