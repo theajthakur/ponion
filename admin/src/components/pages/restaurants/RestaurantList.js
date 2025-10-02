@@ -20,6 +20,38 @@ export default function RestaurantList() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
+  const activateRestaurantStatus = async (ownerId) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/${user.role}/user/approve`,
+        { ownerId },
+        {
+          headers: { Authorization: token },
+        }
+      );
+      toast.success("Activated!");
+      setRestaurants((prev) =>
+        prev.map((restaurant) => {
+          if (restaurant.owner && restaurant.owner._id === ownerId) {
+            return {
+              ...restaurant,
+              owner: {
+                ...restaurant.owner,
+                status: "active",
+              },
+            };
+          }
+          return restaurant;
+        })
+      );
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!token) return;
     const fetchData = async () => {
@@ -138,8 +170,28 @@ export default function RestaurantList() {
                   : "bg-info text-card"
               }`}
             >
-              {rest.owner.status.replace("_", " ")}
+              {rest.owner.status.replace("_", " ").split(" ")[0]}
             </Typography>
+
+            {rest.owner.status === "pending_email" && (
+              <Button
+                onClick={() => {
+                  activateRestaurantStatus(rest.owner._id);
+                }}
+                variant="contained"
+                sx={{
+                  backgroundColor: "var(--color-success)",
+                  color: "var(--color-card)",
+                  "&:hover": { backgroundColor: "var(--color-white)" },
+                  py: 0.5,
+                  px: 2,
+                  fontSize: 14,
+                  fontWeight: "bold",
+                }}
+              >
+                Activate
+              </Button>
+            )}
 
             <Button
               variant="contained"
