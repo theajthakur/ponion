@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../../models/User");
+const Restaurant = require("../../models/Restaurant");
 
 const handleApproveRestaurent = async (req, res) => {
   try {
@@ -61,4 +62,16 @@ const handleApproveRestaurent = async (req, res) => {
   }
 };
 
-module.exports = { handleApproveRestaurent };
+const fetchAllRestaurants = async (req, res) => {
+  const restaurants = await Restaurant.find({}).populate(
+    "owner",
+    "name status role"
+  );
+  return res.status(200).json({
+    status: "success",
+    message: `${restaurants.length} restaurant fetched successfully!`,
+    restaurants,
+  });
+};
+
+module.exports = { handleApproveRestaurent, fetchAllRestaurants };

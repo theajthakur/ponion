@@ -139,7 +139,7 @@ const handleListMenuItems = async (req, res) => {
 };
 
 module.exports = {
-  handleRemoveMenuItem,
+  handleCreateNewMenuItem,
   handleRemoveMenuItem,
   handleListMenuItems,
 };

@@ -107,13 +107,13 @@ const restaurantUserSchema = Joi.object({
   gender: Joi.string().valid("male", "female", "other").default("other"),
   restaurantName: Joi.string().min(2).max(100).required(),
   address: Joi.object({
-    lat: Joi.number().required(),
-    lng: Joi.number().required(),
+    lat: Joi.string().required(),
+    lng: Joi.string().required(),
+    raw: Joi.string().min(5).max(100).required(),
   }).required(),
 });
 
 const handleNewRestaurantUser = async (req, res) => {
-  // Validate request body
   const { error, value } = restaurantUserSchema.validate(req.body);
 
   if (error) {
@@ -151,10 +151,7 @@ const handleNewRestaurantUser = async (req, res) => {
     await Restaurant.create({
       owner: newUser._id,
       name: restaurantName,
-      address: {
-        lat: address.lat,
-        lng: address.lng,
-      },
+      address,
     });
 
     return res.status(201).json({

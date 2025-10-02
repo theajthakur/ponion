@@ -11,6 +11,7 @@ const restaurantSchema = new mongoose.Schema(
     address: {
       lat: { type: String, required: true },
       lng: { type: String, required: true },
+      raw: { type: String, required: true },
     },
     bankDetails: {
       acc_no: {
