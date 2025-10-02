@@ -4,8 +4,8 @@ import React from "react";
 import Sidebar from "./_components/Sidebar";
 import { Box, Toolbar } from "@mui/material";
 import { Toaster } from "sonner";
-import AdminLogin from "./_components/Login";
 import { useAuth } from "./AuthProvider";
+import AuthContainer from "./_components/Auth";
 
 export default function MainProvider({ children }) {
   const { user } = useAuth();
@@ -28,7 +28,7 @@ export default function MainProvider({ children }) {
           </Box>
         </Box>
       ) : (
-        <AdminLogin />
+        <AuthContainer />
       )}
       <Toaster position="top-right" richColors />
     </Box>

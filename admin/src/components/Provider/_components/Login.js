@@ -59,20 +59,12 @@ export default function AdminLogin() {
   }, [loading]);
 
   useEffect(() => {
+    if (!error) return;
     toast.error(error);
   }, [error]);
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "var(--color-background)",
-        p: 2,
-      }}
-    >
+    <Box>
       {loading ? (
         <Box
           sx={{
