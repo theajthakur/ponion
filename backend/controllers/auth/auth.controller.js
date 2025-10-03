@@ -5,6 +5,9 @@ const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 const Restaurant = require("../../models/Restaurant");
 const Joi = require("joi");
+const fs = require("fs");
+const path = require("path");
+
 const {
   emailVerificationTemplate,
 } = require("../../lib/template/email.verify.template");
@@ -124,6 +127,7 @@ const handleNewRestaurantUser = async (req, res) => {
   }
 
   const { email, password, name, gender, restaurantName, address } = value;
+  const imageFile = req.file;
 
   try {
     // Check duplicate user
@@ -139,6 +143,7 @@ const handleNewRestaurantUser = async (req, res) => {
     const hashedPass = await bcrypt.hash(password, 10);
 
     // Create user
+
     const newUser = await User.create({
       name,
       email,
@@ -148,10 +153,16 @@ const handleNewRestaurantUser = async (req, res) => {
     });
 
     // Create restaurant linked to user
+    const restaurantId = uuidv4();
+    const newFilename = `${restaurantId}.jpg`;
+    const newFilePath = path.join("public", "uploads", newFilename);
+    fs.renameSync(imageFile.path, newFilePath);
     await Restaurant.create({
+      restaurantId,
       owner: newUser._id,
       name: restaurantName,
       address,
+      banner: newFilePath,
     });
 
     return res.status(201).json({

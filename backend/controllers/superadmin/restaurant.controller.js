@@ -63,15 +63,22 @@ const handleApproveRestaurent = async (req, res) => {
 };
 
 const fetchAllRestaurants = async (req, res) => {
-  const restaurants = await Restaurant.find({}).populate(
-    "owner",
-    "name status role"
-  );
-  return res.status(200).json({
-    status: "success",
-    message: `${restaurants.length} restaurant fetched successfully!`,
-    restaurants,
-  });
+  try {
+    const restaurantsFetched = await Restaurant.find({}).populate(
+      "owner",
+      "name status role"
+    );
+    const restaurants = restaurantsFetched.filter(
+      (d) => d.owner.status == "active"
+    );
+    return res.status(200).json({
+      status: "success",
+      message: `${restaurants.length} restaurant fetched successfully!`,
+      restaurants,
+    });
+  } catch (error) {
+    return res.json({ status: "error", message: "No restaurant found!" });
+  }
 };
 
 module.exports = { handleApproveRestaurent, fetchAllRestaurants };
