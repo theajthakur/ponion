@@ -22,6 +22,8 @@ const {
   checkAuthSuperAdmin,
 } = require("./middlewares/auth.middleware");
 
+app.use("/api/", require("./routes/api/main.route"));
+
 // Protected Routes for logged in Users
 app.use(checkAuth);
 const profileRoute = require("./routes/user/profile.route");

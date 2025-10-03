@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const restaurantSchema = new mongoose.Schema(
   {
+    restaurantId: { type: String, required: true },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -34,6 +35,14 @@ const restaurantSchema = new mongoose.Schema(
         },
       },
     ],
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    banner: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );
