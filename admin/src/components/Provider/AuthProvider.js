@@ -3,16 +3,16 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
+import AdminLoading from "./_components/Loader";
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
-  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("ponion_admin_token");
-    if (!token) return;
+    if (!token) return setLoading(false);
     setUserToken(token);
     try {
       const decoded = jwtDecode(token);
@@ -20,7 +20,6 @@ export default function AuthProvider({ children }) {
         throw new Error("Token expired");
       }
       setUser(decoded);
-      router.push("/");
     } catch (err) {
       console.error("Invalid token:", err);
       localStorage.removeItem("ponion_admin_token");
@@ -71,11 +70,7 @@ export function ProtectedRoute({ children, allowedRoutes = [] }) {
   }, [user, loading, pathname, allowedRoutes, router]);
 
   if (loading || (!user && !allowedRoutes.includes(pathname))) {
-    return (
-      <div className="flex justify-center items-center min-h-screen text-text-secondary">
-        Loading...
-      </div>
-    );
+    return <AdminLoading />;
   }
 
   return children;

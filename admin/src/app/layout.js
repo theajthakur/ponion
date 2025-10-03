@@ -12,10 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Metadata without viewport
 export const metadata = {
   title: "PONION Admin Panel",
   description: "Admin dashboard for managing PONION food delivery platform",
-  viewport: "width=device-width, initial-scale=1",
+};
+
+// Dedicated viewport export
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {

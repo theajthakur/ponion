@@ -28,6 +28,8 @@ import {
 import { useAuth } from "../AuthProvider";
 import { useRouter } from "next/navigation";
 
+import { motion } from "framer-motion";
+
 const drawerWidth = 240;
 
 export default function Sidebar() {
@@ -95,74 +97,76 @@ export default function Sidebar() {
   let menuItems = globalItems.filter((g) => g.role.includes(user.role));
 
   return (
-    <Drawer
-      variant="permanent"
-      open={open}
-      sx={{
-        width: open ? drawerWidth : 60,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: open ? drawerWidth : 60,
-          boxSizing: "border-box",
-          transition: "width 0.3s",
-          backgroundColor: user?.role == "superadmin" ? "#ffedaf" : "",
-        },
-      }}
-    >
-      <Toolbar
+    <motion.div initial={{ x: -50, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
+      <Drawer
+        variant="permanent"
+        open={open}
         sx={{
-          display: "flex",
-          justifyContent: open ? "space-between" : "center",
-          px: 2,
+          width: open ? drawerWidth : 60,
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: open ? drawerWidth : 60,
+            boxSizing: "border-box",
+            transition: "width 0.3s",
+            backgroundColor: user?.role == "superadmin" ? "#ffedaf" : "",
+          },
         }}
       >
-        {open && (
-          <Typography variant="h6" className=" whitespace-nowrap">
-            Admin Panel
-          </Typography>
-        )}
-        <IconButton onClick={() => setOpen(!open)}>
-          <Menu />
-        </IconButton>
-      </Toolbar>
-      <Divider />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem disablePadding key={item.text} sx={{ px: 2 }}>
-            <ListItemButton
-              onClick={() => {
-                router.push(item.path);
-              }}
-              sx={{
-                display: "flex",
-                justifyContent: open ? "flex-start" : "center",
-              }}
-            >
-              <ListItemIcon
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: open ? "space-between" : "center",
+            px: 2,
+          }}
+        >
+          {open && (
+            <Typography variant="h6" className=" whitespace-nowrap">
+              Admin Panel
+            </Typography>
+          )}
+          <IconButton onClick={() => setOpen(!open)}>
+            <Menu />
+          </IconButton>
+        </Toolbar>
+        <Divider />
+        <List>
+          {menuItems.map((item) => (
+            <ListItem disablePadding key={item.text} sx={{ px: 2 }}>
+              <ListItemButton
+                onClick={() => {
+                  router.push(item.path);
+                }}
                 sx={{
-                  minWidth: 0,
-                  justifyContent: "center",
+                  display: "flex",
+                  justifyContent: open ? "flex-start" : "center",
                 }}
               >
-                {item.icon}
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    justifyContent: "center",
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                {open && <ListItemText primary={item.text} sx={{ ml: 2 }} />}
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+
+        <Divider />
+        <List sx={{ mt: "auto" }} onClick={logout}>
+          <ListItem sx={{ px: 2 }}>
+            <ListItemButton>
+              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
+                <LogoutOutlined />
               </ListItemIcon>
-              {open && <ListItemText primary={item.text} sx={{ ml: 2 }} />}
+              {open && <ListItemText primary="Logout" sx={{ ml: 2 }} />}
             </ListItemButton>
           </ListItem>
-        ))}
-      </List>
-
-      <Divider />
-      <List sx={{ mt: "auto" }} onClick={logout}>
-        <ListItem sx={{ px: 2 }}>
-          <ListItemButton>
-            <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
-              <LogoutOutlined />
-            </ListItemIcon>
-            {open && <ListItemText primary="Logout" sx={{ ml: 2 }} />}
-          </ListItemButton>
-        </ListItem>
-      </List>
-    </Drawer>
+        </List>
+      </Drawer>
+    </motion.div>
   );
 }
