@@ -1,6 +1,6 @@
 const Restaurant = require("../../models/Restaurant");
 
-const fetchAllRestaurants = async () => {
+const fetchActiveRestaurants = async (req, res) => {
   const restaurantsDirect = await Restaurant.find({}).populate(
     "owner",
     "name status role"
@@ -11,5 +11,8 @@ const fetchAllRestaurants = async () => {
   return res.status(200).json({
     status: "success",
     message: `${restaurants.length} restaurants fetched successfully`,
+    restaurants,
   });
 };
+
+module.exports = { fetchActiveRestaurants };

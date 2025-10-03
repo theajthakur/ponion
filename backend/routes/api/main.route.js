@@ -1,9 +1,9 @@
 const express = require("express");
 const {
-  fetchAllRestaurants,
-} = require("../../controllers/superadmin/restaurant.controller");
+  fetchActiveRestaurants,
+} = require("../../controllers/api/restaurants.controller");
 const router = express.Router();
 
-router.get("/restaurants", fetchAllRestaurants);
+router.get("/restaurants", fetchActiveRestaurants);
 
 module.exports = router;
