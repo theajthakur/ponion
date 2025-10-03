@@ -45,22 +45,25 @@ export default function Navbar() {
               >
                 <p className="text-[#888888] hover:text-black cursor-pointer flex items-center gap-1">
                   Welcome <b>{user.name.split(" ")[0]}</b>
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown
+                    className={`w-4 h-4 transform transition-transform duration-300 ${
+                      dropDown ? "rotate-180" : "rotate-0"
+                    }`}
+                  />
                 </p>
 
                 {dropDown && (
-                  <div className="absolute right-0 mt-2 bg-white border border-gray-200 min-w-[200px] sm:min-w-[250px] rounded-md shadow-md py-2">
+                  <motion.div
+                    initial={{ y: 100, opacity: 0, rotate: -90 }}
+                    animate={{ y: 0, opacity: 1, rotate: 0 }}
+                    transition={{ duration: 0.5, ease: "backInOut" }}
+                    className="absolute right-0 mt-2 bg-white border border-gray-200 min-w-[200px] sm:min-w-[250px] rounded-md shadow-md py-2"
+                  >
                     <a
                       href="/profile"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
                     >
                       Profile
-                    </a>
-                    <a
-                      href="/settings"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                    >
-                      Settings
                     </a>
                     <button
                       onClick={logout}
@@ -68,7 +71,7 @@ export default function Navbar() {
                     >
                       Logout
                     </button>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             ) : (

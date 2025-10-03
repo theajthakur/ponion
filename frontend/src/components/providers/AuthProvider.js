@@ -33,9 +33,9 @@ export default function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    toast.success("Logout successfully");
     setUser(null);
     localStorage.removeItem("ponion_token");
-    toast.success("Logout successfully");
   };
 
   return (
