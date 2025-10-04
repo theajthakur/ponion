@@ -1,18 +1,79 @@
 const Restaurant = require("../../models/Restaurant");
 
 const fetchActiveRestaurants = async (req, res) => {
-  const restaurantsDirect = await Restaurant.find({}).populate(
-    "owner",
-    "name status role"
-  );
-  const restaurants = restaurantsDirect.filter(
-    (r) => r.owner.status == "active"
-  );
-  return res.status(200).json({
-    status: "success",
-    message: `${restaurants.length} restaurants fetched successfully`,
-    restaurants,
-  });
+  try {
+    const restaurantsDirect = await Restaurant.find({}).populate(
+      "owner",
+      "name status role"
+    );
+
+    if (!restaurantsDirect || restaurantsDirect.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No restaurants found",
+      });
+    }
+
+    const restaurants = restaurantsDirect.filter(
+      (r) => r.owner?.status === "active"
+    );
+
+    return res.status(200).json({
+      status: "success",
+      message: `${restaurants.length} restaurants fetched successfully`,
+      restaurants,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching restaurants",
+      error: error.message,
+    });
+  }
 };
 
-module.exports = { fetchActiveRestaurants };
+const fetchRestaurantById = async (req, res) => {
+  try {
+    const { restaurantID } = req.params;
+
+    if (!restaurantID) {
+      return res.status(400).json({
+        status: "error",
+        message: "Restaurant ID is required",
+      });
+    }
+
+    const restaurant = await Restaurant.findById(restaurantID).populate(
+      "owner",
+      "name status role"
+    );
+
+    if (!restaurant) {
+      return res.status(404).json({
+        status: "error",
+        message: "Restaurant not found",
+      });
+    }
+
+    if (restaurant.status !== "active") {
+      return res.status(400).json({
+        status: "error",
+        message: "Restaurant is not verified",
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: "Restaurant fetched successfully",
+      restaurant,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the restaurant",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { fetchActiveRestaurants, fetchRestaurantById };

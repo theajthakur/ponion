@@ -22,19 +22,6 @@ const restaurantSchema = new mongoose.Schema(
         type: String,
       },
     },
-    menu: [
-      {
-        itemName: { type: String, required: true },
-        price: { type: Number, required: true },
-        available: { type: Boolean, default: true },
-        thumbnail: { type: String },
-        dietType: {
-          type: String,
-          enum: ["veg", "egg", "non_veg"],
-          required: true,
-        },
-      },
-    ],
     rating: {
       type: Number,
       default: 0,
