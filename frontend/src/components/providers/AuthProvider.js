@@ -3,10 +3,12 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
+import Loader from "../ui/Loader";
+import UserLoading from "../ui/AdvancedLoader";
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // ✅ start as null
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,11 +63,7 @@ export function ProtectedRoute({ children, allowedRoutes = [] }) {
   }, [user, loading, pathname, allowedRoutes, router]);
 
   if (loading || (!user && !allowedRoutes.includes(pathname))) {
-    return (
-      <div className="flex justify-center items-center min-h-screen text-text-secondary">
-        Loading...
-      </div>
-    );
+    return <UserLoading />;
   }
 
   return children;

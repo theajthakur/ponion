@@ -14,7 +14,7 @@ import Loader from "@/components/ui/Loader";
 
 export default function Restaurants() {
   const [restaurants, setRestaurants] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
@@ -123,7 +123,12 @@ export default function Restaurants() {
                             "No Rating given"
                           )}
                         </span>
-                        <button className="px-3 hover:px-4 transition-all duration-300 py-1 ms-auto cursor-pointer rounded-lg bg-secondary text-white font-semibold hover:bg-secondary-hover inline-flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            window.location.href = `/restaurant/${rest?.restaurantId}`;
+                          }}
+                          className="px-3 hover:px-4 transition-all duration-300 py-1 ms-auto cursor-pointer rounded-lg bg-secondary text-white font-semibold hover:bg-secondary-hover inline-flex items-center gap-2"
+                        >
                           <ArrowRight />
                         </button>
                       </div>
