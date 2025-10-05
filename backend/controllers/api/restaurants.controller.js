@@ -1,3 +1,4 @@
+const Menu = require("../../models/Menu");
 const Restaurant = require("../../models/Restaurant");
 
 const fetchActiveRestaurants = async (req, res) => {
@@ -34,16 +35,16 @@ const fetchActiveRestaurants = async (req, res) => {
 
 const fetchRestaurantById = async (req, res) => {
   try {
-    const { restaurantID } = req.params;
+    const { restaurantId } = req.params;
 
-    if (!restaurantID) {
+    if (!restaurantId) {
       return res.status(400).json({
         status: "error",
         message: "Restaurant ID is required",
       });
     }
 
-    const restaurant = await Restaurant.findById(restaurantID).populate(
+    const restaurant = await Restaurant.findOne({ restaurantId }).populate(
       "owner",
       "name status role"
     );
@@ -55,7 +56,7 @@ const fetchRestaurantById = async (req, res) => {
       });
     }
 
-    if (restaurant.status !== "active") {
+    if (restaurant.owner.status !== "active") {
       return res.status(400).json({
         status: "error",
         message: "Restaurant is not verified",
@@ -76,4 +77,55 @@ const fetchRestaurantById = async (req, res) => {
   }
 };
 
-module.exports = { fetchActiveRestaurants, fetchRestaurantById };
+const fetchMenuByRestaurantId = async (req, res) => {
+  try {
+    const { restaurantId } = req.params;
+
+    if (!restaurantId) {
+      return res.status(400).json({
+        status: "error",
+        message: "Restaurant ID is required",
+      });
+    }
+
+    const restaurant = await Restaurant.findOne({ restaurantId }).populate(
+      "owner",
+      "name status role"
+    );
+
+    if (!restaurant) {
+      return res.status(404).json({
+        status: "error",
+        message: "Restaurant not found",
+      });
+    }
+
+    if (restaurant.owner.status !== "active") {
+      return res.status(400).json({
+        status: "error",
+        message: "Restaurant is not verified",
+      });
+    }
+
+    const menuItems = await Menu.find({ restaurantId: restaurant._id });
+
+    return res.status(200).json({
+      status: "success",
+      message: `${menuItems.length} items from menu fetched successfully`,
+      restaurant,
+      menuItems,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the restaurant",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  fetchActiveRestaurants,
+  fetchRestaurantById,
+  fetchMenuByRestaurantId,
+};
