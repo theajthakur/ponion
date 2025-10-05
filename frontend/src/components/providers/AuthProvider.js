@@ -3,13 +3,13 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
-import Loader from "../ui/Loader";
 import UserLoading from "../ui/AdvancedLoader";
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("ponion_token");
@@ -41,7 +41,7 @@ export default function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, serverURL }}>
       {children}
     </AuthContext.Provider>
   );
@@ -54,15 +54,21 @@ export function ProtectedRoute({ children, allowedRoutes = [] }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (!loading) {
-      if (!user && !allowedRoutes.includes(pathname)) {
-        router.push("/login");
-      }
+  const isAllowed = allowedRoutes.some((route) => {
+    if (route.endsWith("/*")) {
+      const baseRoute = route.replace("/*", "");
+      return pathname.startsWith(baseRoute);
     }
-  }, [user, loading, pathname, allowedRoutes, router]);
+    return pathname === route;
+  });
 
-  if (loading || (!user && !allowedRoutes.includes(pathname))) {
+  useEffect(() => {
+    if (!loading && !user && !isAllowed) {
+      router.push("/login");
+    }
+  }, [user, loading, pathname, isAllowed, router]);
+
+  if (loading || (!user && !isAllowed)) {
     return <UserLoading />;
   }
 

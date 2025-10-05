@@ -6,7 +6,7 @@ import AuthProvider, { ProtectedRoute, useAuth } from "./AuthProvider";
 export default function LayoutProvider({ children }) {
   return (
     <AuthProvider>
-      <ProtectedRoute allowedRoutes={["/login", "/", ""]}>
+      <ProtectedRoute allowedRoutes={["/", "/login", "/restaurant/*"]}>
         <div className="min-h-screen flex flex-col bg-white">
           <div className="navbar-container">
             <Navbar />

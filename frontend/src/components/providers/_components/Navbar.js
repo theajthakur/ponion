@@ -54,10 +54,10 @@ export default function Navbar() {
 
                 {dropDown && (
                   <motion.div
-                    initial={{ y: 100, opacity: 0, rotate: -90 }}
+                    initial={{ y: 100, opacity: 0, rotate: -10 }}
                     animate={{ y: 0, opacity: 1, rotate: 0 }}
                     transition={{ duration: 0.5, ease: "backInOut" }}
-                    className="absolute right-0 mt-2 bg-white border border-gray-200 min-w-[200px] sm:min-w-[250px] rounded-md shadow-md py-2"
+                    className="absolute z-50 right-0 mt-2 bg-white border border-gray-200 min-w-[200px] sm:min-w-[250px] rounded-md shadow-md py-2"
                   >
                     <a
                       href="/profile"
