@@ -78,4 +78,44 @@ const fetchAllRestaurants = async (req, res) => {
   }
 };
 
-module.exports = { handleApproveRestaurent, fetchAllRestaurants };
+const getRestaurantDetails = async (req, res) => {
+  const { restaurantId } = req.params;
+  if (!restaurantId)
+    return res
+      .status(400)
+      .json({ status: "error", message: "No restaurant specified!" });
+
+  const restaurant = await Restaurant.findOne({ restaurantId }).populate(
+    "owner"
+  );
+  if (!restaurant)
+    return res
+      .status(400)
+      .json({ sttaus: "error", message: "No restaurant found!" });
+
+  return res
+    .status(200)
+    .json({ status: "success", message: "Restaurant", restaurant });
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    return res.status(200).json({
+      status: "success",
+      message: "Users fetched successfully!",
+      users,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: "error", json: "Something went wrong!" });
+  }
+};
+
+module.exports = {
+  handleApproveRestaurent,
+  fetchAllRestaurants,
+  getRestaurantDetails,
+  getAllUsers,
+};

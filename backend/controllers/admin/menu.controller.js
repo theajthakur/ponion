@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const Restaurant = require("../../models/Restaurant");
+const Menu = require("../../models/Menu");
 
 const allowedDietType = ["veg", "egg", "non_veg"];
 
@@ -10,58 +11,52 @@ const menuItemSchema = Joi.object({
   dietType: Joi.string()
     .valid(...allowedDietType)
     .required(),
+  thumbnail: Joi.string().uri().optional(),
 });
 
 const handleCreateNewMenuItem = async (req, res) => {
   try {
-    // ✅ Validate request body
     const { error, value } = menuItemSchema.validate(req.body, {
       abortEarly: false,
     });
-
-    if (error) {
+    if (error)
       return res.status(400).json({
         status: "error",
         message: "Validation failed!",
-        details: error.details.map((detail) => detail.message),
+        details: error.details.map((d) => d.message),
       });
-    }
 
-    const { itemName, price, available, dietType } = value;
-
-    // ✅ Find the restaurant by owner ID
+    const { itemName, price, available, dietType, thumbnail } = value;
     const restaurant = await Restaurant.findOne({ owner: req._id });
 
-    if (!restaurant) {
+    if (!restaurant)
       return res.status(404).json({
         status: "error",
         message: "Restaurant not found for the current user.",
       });
-    }
 
-    // ✅ Check if menu has reached the limit
-    if (restaurant.menu.length >= 10) {
+    const count = await Menu.countDocuments({ restaurantId: restaurant._id });
+    if (count >= 10)
       return res.status(400).json({
         status: "error",
         message: "You can't have more than 10 items on your menu!",
       });
-    }
 
-    // ✅ Add the new menu item
-    const updatedRestaurant = await Restaurant.findOneAndUpdate(
-      { owner: req._id },
-      {
-        $push: {
-          menu: { itemName, price, available, dietType },
-        },
-      },
-      { new: true }
-    );
+    const newMenuItem = await Menu.create({
+      restaurantId: restaurant._id,
+      itemName,
+      price,
+      available,
+      dietType,
+      thumbnail,
+    });
+
+    const updatedMenu = await Menu.find({ restaurantId: restaurant._id });
 
     return res.status(200).json({
       status: "success",
       message: `${itemName} added to your menu!`,
-      updatedMenu: updatedRestaurant.menu,
+      updatedMenu,
     });
   } catch (error) {
     return res.status(500).json({
@@ -76,41 +71,36 @@ const handleCreateNewMenuItem = async (req, res) => {
 const handleRemoveMenuItem = async (req, res) => {
   try {
     const { itemId } = req.body;
-    if (!itemId) {
+    if (!itemId)
       return res.status(400).json({
         status: "error",
         message: "Menu item ID is required.",
       });
-    }
 
-    const updatedRestaurant = await Restaurant.findOneAndUpdate(
-      { owner: req._id },
-      { $pull: { menu: { _id: itemId } } },
-      { new: true }
-    );
-
-    if (!updatedRestaurant) {
+    const restaurant = await Restaurant.findOne({ owner: req._id });
+    if (!restaurant)
       return res.status(404).json({
         status: "error",
         message: "Restaurant not found for the current user.",
       });
-    }
 
-    const itemExists = updatedRestaurant.menu.some(
-      (item) => item._id.toString() === itemId
-    );
+    const deletedItem = await Menu.findOneAndDelete({
+      _id: itemId,
+      restaurantId: restaurant._id,
+    });
 
-    if (itemExists) {
-      return res.status(400).json({
+    if (!deletedItem)
+      return res.status(404).json({
         status: "error",
-        message: "Item could not be removed.",
+        message: "Menu item not found or already removed.",
       });
-    }
+
+    const updatedMenu = await Menu.find({ restaurantId: restaurant._id });
 
     return res.status(200).json({
       status: "success",
-      message: `Item removed successfully!`,
-      updatedMenu: updatedRestaurant.menu,
+      message: "Item removed successfully!",
+      updatedMenu,
     });
   } catch (error) {
     return res.status(500).json({
@@ -121,25 +111,7 @@ const handleRemoveMenuItem = async (req, res) => {
   }
 };
 
-const handleListMenuItems = async (req, res) => {
-  try {
-    const restaurant = await Restaurant.findOne({ owner: req._id });
-    return res.json({
-      status: "success",
-      message: "menu fetched successfully",
-      restaurant,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.json({
-      status: "error",
-      message: "failed to fetch menu items!",
-    });
-  }
-};
-
 module.exports = {
   handleCreateNewMenuItem,
   handleRemoveMenuItem,
-  handleListMenuItems,
 };
