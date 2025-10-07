@@ -14,6 +14,7 @@ import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { toast } from "sonner";
 import SingleImageUploader from "./ImageUploader";
 import SuccessRestaurantCreation from "./SuccessRestaurantCreation";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function RestaurantRegisterForm() {
   const [registered, setRegistered] = useState(false);
@@ -133,173 +134,130 @@ export default function RestaurantRegisterForm() {
       setLoading(false);
     }
   };
-
   return (
     <>
       {registered ? (
         <SuccessRestaurantCreation />
       ) : (
-        <Box>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              width: "100%",
-              maxWidth: 500,
-              borderRadius: 3,
-              backgroundColor: "var(--color-card)",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                mb: 3,
-                fontWeight: "bold",
-                color: "var(--color-foreground)",
-                fontFamily: "var(--font-sans)",
-              }}
-            >
-              Restaurant Registration
-            </Typography>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="bg-white">
+            <div className="w-full max-w-md bg-card shadow-lg rounded-2xl p-8">
+              <h2 className="text-2xl font-bold mb-5 text-foreground font-sans">
+                Restaurant Registration
+              </h2>
 
-            {loading ? (
-              <Box>
-                <Typography sx={{ mb: 2 }}>Submitting...</Typography>
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  {Array(7)
-                    .fill(0)
-                    .map((_, idx) => (
-                      <Box
-                        key={idx}
-                        sx={{
-                          height: 40,
-                          backgroundColor: "#e0e0e0",
-                          borderRadius: 1,
-                        }}
-                      />
-                    ))}
-                </Box>
-              </Box>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                <TextField
-                  fullWidth
-                  type="email"
-                  name="email"
-                  label="Email"
-                  variant="outlined"
-                  value={formData.email}
-                  onChange={handleChange}
-                  sx={{ mb: 2 }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Mail />
-                      </InputAdornment>
-                    ),
-                  }}
-                  required
-                />
-
-                <TextField
-                  fullWidth
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  label="Password"
-                  variant="outlined"
-                  value={formData.password}
-                  onChange={handleChange}
-                  sx={{ mb: 2 }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  required
-                />
-
-                <TextField
-                  fullWidth
-                  name="name"
-                  label="Full Name"
-                  variant="outlined"
-                  value={formData.name}
-                  onChange={handleChange}
-                  sx={{ mb: 2 }}
-                  required
-                />
-
-                <TextField
-                  select
-                  fullWidth
-                  name="gender"
-                  label="Gender"
-                  variant="outlined"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  sx={{ mb: 2 }}
-                  required
-                >
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </TextField>
-
-                <TextField
-                  fullWidth
-                  name="restaurantName"
-                  label="Restaurant Name"
-                  variant="outlined"
-                  value={formData.restaurantName}
-                  onChange={handleChange}
-                  sx={{ mb: 2 }}
-                  required
-                />
-                <TextField
-                  fullWidth
-                  name="address"
-                  label="Address of Restaurant"
-                  variant="outlined"
-                  onChange={handleChange}
-                  value={formData?.address?.raw}
-                  sx={{ mb: 3 }}
-                />
-
-                <div className="mb-5">
-                  <SingleImageUploader
-                    onChange={(file) => setUploadedImage(file)}
-                  />
+              {loading ? (
+                <div>
+                  <p className="mb-2 text-gray-600 font-medium">
+                    Submitting...
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {Array(7)
+                      .fill(0)
+                      .map((_, idx) => (
+                        <div
+                          key={idx}
+                          className="h-10 bg-gray-300 rounded-md animate-pulse"
+                        />
+                      ))}
+                  </div>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="mb-3 relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                  </div>
 
-                {/* Hidden latitude & longitude */}
-                <input type="hidden" name="lat" value={formData.lat} />
-                <input type="hidden" name="lng" value={formData.lng} />
+                  <div className="mb-3 relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
 
-                <Button
-                  type="submit"
-                  fullWidth
-                  sx={{
-                    backgroundColor: "var(--color-primary)",
-                    color: "var(--color-card)",
-                    "&:hover": { backgroundColor: "var(--color-secondary)" },
-                    py: 1.5,
-                    fontWeight: "bold",
-                    fontFamily: "var(--font-sans)",
-                  }}
-                >
-                  Register
-                </Button>
-              </form>
-            )}
-          </Paper>
-        </Box>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  />
+
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-gray-700"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+
+                  <input
+                    type="text"
+                    name="restaurantName"
+                    placeholder="Restaurant Name"
+                    value={formData.restaurantName}
+                    onChange={handleChange}
+                    required
+                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  />
+
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="Address of Restaurant"
+                    value={formData.address.raw}
+                    onChange={handleChange}
+                    className="w-full mb-5 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                  />
+
+                  <div className="mb-5">
+                    <SingleImageUploader
+                      onChange={(file) => setUploadedImage(file)}
+                    />
+                  </div>
+
+                  <input type="hidden" name="lat" value={formData.lat} />
+                  <input type="hidden" name="lng" value={formData.lng} />
+
+                  <button
+                    type="submit"
+                    className="w-full bg-primary text-card font-semibold font-sans py-3 rounded-lg hover:bg-secondary transition"
+                  >
+                    Register
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

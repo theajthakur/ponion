@@ -14,7 +14,7 @@ import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
 
-export default function AdminLogin() {
+export default function AdminLogin({ onToggle }) {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,12 +59,17 @@ export default function AdminLogin() {
   }, [loading]);
 
   useEffect(() => {
+    if (showPassword) return onToggle(false);
+    return onToggle(true);
+  }, [showPassword]);
+
+  useEffect(() => {
     if (!error) return;
     toast.error(error);
   }, [error]);
 
   return (
-    <Box>
+    <Box sx={{ background: "white", borderRadius: "0" }}>
       {loading ? (
         <Box
           sx={{
@@ -100,7 +105,7 @@ export default function AdminLogin() {
             width: "100%",
             maxWidth: 400,
             borderRadius: 3,
-            backgroundColor: "var(--color-card)",
+            overflow: "hidden",
           }}
         >
           <Typography
@@ -141,6 +146,14 @@ export default function AdminLogin() {
               sx={{ mb: 3 }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => {
+                onToggle(false);
+                setShowPassword(false);
+              }}
+              autoComplete="false"
+              onBlur={() => {
+                onToggle(true);
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

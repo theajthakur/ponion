@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Modal,
   Paper,
   Typography,
   Button,
@@ -11,14 +12,26 @@ import {
   MenuItem,
 } from "@mui/material";
 import { toast } from "sonner";
-
+import RestaurantCard from "./_components/RestaurantDetail";
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  p: 4,
+};
 export default function RestaurantList() {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const { token, user } = useAuth();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [restaurantDetail, setRestaurantDetail] = useState({});
 
   const activateRestaurantStatus = async (ownerId) => {
     setLoading(true);
@@ -100,9 +113,19 @@ export default function RestaurantList() {
       </Typography>
     );
 
+  const viewRestaurantDetail = async (restaurantId) => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/superadmin/restaurant/${restaurantId}`;
+      const res = await axios.get(url, { headers: { Authorization: token } });
+      setRestaurantDetail(res.data.restaurant);
+      handleOpen();
+    } catch (error) {
+      toast.error(error.message || "Something went wrong!");
+    }
+  };
+
   return (
     <Box className="p-6 flex flex-col gap-4">
-      {/* Filters */}
       <Box className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
         <TextField
           label="Search"
@@ -127,7 +150,6 @@ export default function RestaurantList() {
         </TextField>
       </Box>
 
-      {/* Restaurant Cards */}
       {filteredRestaurants.length === 0 && (
         <Typography variant="body1" className="text-center text-text-secondary">
           No matching restaurants
@@ -161,17 +183,19 @@ export default function RestaurantList() {
           </Box>
 
           <Box className="flex flex-col sm:flex-row gap-2 sm:items-center mt-4 sm:mt-0">
-            <Typography
-              className={`px-2 py-1 rounded-full text-xs font-bold ${
-                rest.owner.status === "pending_email"
-                  ? "bg-warning text-card"
-                  : rest.owner.status === "active"
-                  ? "bg-success text-card"
-                  : "bg-info text-card"
-              }`}
-            >
-              {rest.owner.status.replace("_", " ").split(" ")[0]}
-            </Typography>
+            {rest.owner.status != "active" && (
+              <Typography
+                className={`px-2 py-1 rounded-full text-xs font-bold ${
+                  rest.owner.status === "pending_email"
+                    ? "bg-warning text-card"
+                    : rest.owner.status === "active"
+                    ? "bg-success text-card"
+                    : "bg-info text-card"
+                }`}
+              >
+                {rest.owner.status.replace("_", " ").split(" ")[0]}
+              </Typography>
+            )}
 
             {rest.owner.status === "pending_email" && (
               <Button
@@ -204,12 +228,27 @@ export default function RestaurantList() {
                 fontSize: 14,
                 fontWeight: "bold",
               }}
+              onClick={() => {
+                viewRestaurantDetail(rest.restaurantId);
+              }}
             >
               View
             </Button>
           </Box>
         </Paper>
       ))}
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <Box sx={style}>
+            <RestaurantCard data={restaurantDetail} />
+          </Box>
+        </Modal>
+      </div>
     </Box>
   );
 }
