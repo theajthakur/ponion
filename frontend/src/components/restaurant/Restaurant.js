@@ -12,6 +12,8 @@ export default function RestaurantPage({ resolvedParams }) {
   const [loading, setLoading] = useState(true);
   const [restaurant, setRestaurant] = useState({});
   const { serverURL } = useAuth();
+  const [error, setError] = useState(null);
+  const restaurantID = resolvedParams.restaurantID;
 
   useEffect(() => {
     const fetchData = async (url) => {
@@ -23,10 +25,13 @@ export default function RestaurantPage({ resolvedParams }) {
         console.log(data.restaurant);
       } catch (error) {
         if (error.response) {
-          toast.error(error.response.data.message || "Something went wrong", {
+          const errorMessage =
+            error.response.data.message || "Something went wrong";
+          toast.error(errorMessage, {
             icon: <XCircle className="w-6 h-6" />,
             duration: 5000,
           });
+          setError(errorMessage);
           console.log("Error data:", error.response.data);
         } else {
           toast.error(error.message || "Something went wrong");
@@ -35,7 +40,7 @@ export default function RestaurantPage({ resolvedParams }) {
         setLoading(false);
       }
     };
-    const url = `${serverURL}/api/restaurant/${resolvedParams.restaurantID}`;
+    const url = `${serverURL}/api/restaurant/${restaurantID}`;
     fetchData(url);
   }, []);
 
@@ -118,11 +123,11 @@ export default function RestaurantPage({ resolvedParams }) {
                     )}
                   </div>
                 </div>
-                <MenuItem />
+                <MenuItem restaurantID={restaurantID} />
               </div>
             </>
           ) : (
-            <ErrorMessage message="No restaurant found!" />
+            <ErrorMessage message={error || "No restaurant found!"} />
           )}
         </div>
       ) : (
