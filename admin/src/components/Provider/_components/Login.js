@@ -25,7 +25,6 @@ export default function AdminLogin({ onToggle }) {
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    console.log(email, password);
     try {
       if (!email || !password) {
         setError("Please fill in all fields");

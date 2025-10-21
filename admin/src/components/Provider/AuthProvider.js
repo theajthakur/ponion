@@ -33,6 +33,7 @@ export default function AuthProvider({ children }) {
   const login = (token) => {
     try {
       localStorage.setItem("ponion_admin_token", token);
+      setUserToken(token);
       setUser(jwtDecode(token));
     } catch (error) {
       logout();
@@ -47,7 +48,13 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, loading, token: userToken }}
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+        token: userToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

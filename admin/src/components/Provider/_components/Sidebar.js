@@ -49,7 +49,7 @@ export default function Sidebar() {
       text: "Orders",
       icon: <ShoppingCartOutlined />,
       path: "/orders",
-      role: ["admin", "superadmin"],
+      role: ["admin"],
     },
     {
       text: "Menu",

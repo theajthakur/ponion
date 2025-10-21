@@ -19,8 +19,11 @@ const UserCard = ({ users = [] }) => {
         </div>
       ) : (
         <div>
-          {users.map((user) => (
-            <div className="w-full my-3 bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-5 flex flex-wrap sm:flex-nowrap items-center justify-between shadow-sm hover:shadow-md transition-all duration-300">
+          {users.map((user, i) => (
+            <div
+              key={i}
+              className="w-full my-3 bg-white/80 backdrop-blur-md border border-gray-200 rounded-2xl p-5 flex flex-wrap sm:flex-nowrap items-center justify-between shadow-sm hover:shadow-md transition-all duration-300"
+            >
               <div className="flex items-center space-x-4 min-w-[250px] mb-3 sm:mb-0">
                 <div className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white p-3 rounded-2xl shadow-md">
                   <User className="w-6 h-6" />
