@@ -43,6 +43,11 @@ const handleAttemptLogin = async (req, res) => {
       message: `Your password for ${email} is incorrect!`,
     });
   let tokenUser = user.toObject();
+  if (user.role == "admin") {
+    const restaurant = await Restaurant.findOne({ owner: user._id });
+    if (restaurant) tokenUser.restaurant = restaurant;
+  }
+
   delete tokenUser.password;
   const token = jwt.sign(tokenUser, process.env.JWT_KEY);
   return res.json({

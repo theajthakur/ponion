@@ -11,10 +11,13 @@ const menuItemSchema = Joi.object({
   dietType: Joi.string()
     .valid(...allowedDietType)
     .required(),
-  thumbnail: Joi.string().uri().optional(),
 });
 
 const handleCreateNewMenuItem = async (req, res) => {
+  let thumbnail = req.file?.path;
+  if (thumbnail) {
+    thumbnail = thumbnail.replace("public", "");
+  }
   try {
     const { error, value } = menuItemSchema.validate(req.body, {
       abortEarly: false,
@@ -26,8 +29,8 @@ const handleCreateNewMenuItem = async (req, res) => {
         details: error.details.map((d) => d.message),
       });
 
-    const { itemName, price, available, dietType, thumbnail } = value;
-    const restaurant = await Restaurant.findOne({ owner: req._id });
+    const { itemName, price, available, dietType } = value;
+    const restaurant = await Restaurant.findOne({ owner: req.user._id });
 
     if (!restaurant)
       return res.status(404).json({
@@ -51,12 +54,10 @@ const handleCreateNewMenuItem = async (req, res) => {
       thumbnail,
     });
 
-    const updatedMenu = await Menu.find({ restaurantId: restaurant._id });
-
     return res.status(200).json({
       status: "success",
       message: `${itemName} added to your menu!`,
-      updatedMenu,
+      newMenuItem,
     });
   } catch (error) {
     return res.status(500).json({
