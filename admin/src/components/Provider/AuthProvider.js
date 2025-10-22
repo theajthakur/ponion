@@ -4,9 +4,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
 import AdminLoading from "./_components/Loader";
+import { globalItems } from "@/utils/roleRoute";
 const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userToken, setUserToken] = useState(null);
@@ -18,6 +21,13 @@ export default function AuthProvider({ children }) {
       const decoded = jwtDecode(token);
       if (decoded.exp && Date.now() >= decoded.exp * 1000) {
         throw new Error("Token expired");
+      }
+      if (
+        !globalItems
+          .find((e) => e.path == pathname)
+          ?.role?.includes(decoded.role)
+      ) {
+        router.push("/");
       }
       setUser(decoded);
     } catch (err) {
@@ -62,23 +72,3 @@ export default function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-
-export function ProtectedRoute({ children, allowedRoutes = [] }) {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (!loading) {
-      if (!user && !allowedRoutes.includes(pathname)) {
-        router.push("/login");
-      }
-    }
-  }, [user, loading, pathname, allowedRoutes, router]);
-
-  if (loading || (!user && !allowedRoutes.includes(pathname))) {
-    return <AdminLoading />;
-  }
-
-  return children;
-}

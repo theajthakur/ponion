@@ -12,23 +12,12 @@ import {
   Typography,
   ListItemButton,
 } from "@mui/material";
-import {
-  RestaurantMenuOutlined,
-  DashboardOutlined,
-  StorefrontOutlined,
-  PeopleOutline,
-  ShoppingCartOutlined,
-  BarChartOutlined,
-  LocalOfferOutlined,
-  SettingsOutlined,
-  PersonOutlined,
-  Menu,
-  LogoutOutlined,
-} from "@mui/icons-material";
+import { Menu, LogoutOutlined } from "@mui/icons-material";
 import { useAuth } from "../AuthProvider";
 import { useRouter } from "next/navigation";
 
 import { motion } from "framer-motion";
+import { globalItems } from "@/utils/roleRoute";
 
 const drawerWidth = 240;
 
@@ -38,62 +27,6 @@ export default function Sidebar() {
   const [open, setOpen] = useState(true);
   const { user, logout } = useAuth();
 
-  const globalItems = [
-    {
-      text: "Dashboard",
-      icon: <DashboardOutlined />,
-      path: "/",
-      role: ["admin", "superadmin"],
-    },
-    {
-      text: "Orders",
-      icon: <ShoppingCartOutlined />,
-      path: "/orders",
-      role: ["admin"],
-    },
-    {
-      text: "Menu",
-      icon: <RestaurantMenuOutlined />,
-      path: "/menu",
-      role: ["admin"],
-    },
-    {
-      text: "Users",
-      icon: <PeopleOutline />,
-      path: "/users",
-      role: ["superadmin"],
-    },
-    {
-      text: "Restaurants",
-      icon: <StorefrontOutlined />,
-      path: "/restaurants",
-      role: ["superadmin"],
-    },
-    {
-      text: "Analytics",
-      icon: <BarChartOutlined />,
-      path: "/analytics",
-      role: ["admin", "superadmin"],
-    },
-    {
-      text: "Discounts",
-      icon: <LocalOfferOutlined />,
-      path: "/promotions",
-      role: ["admin", "superadmin"],
-    },
-    {
-      text: "Settings",
-      icon: <SettingsOutlined />,
-      path: "/settings",
-      role: ["superadmin"],
-    },
-    {
-      text: "Profile",
-      icon: <PersonOutlined />,
-      path: "/profile",
-      role: ["admin", "superadmin"],
-    },
-  ];
   let menuItems = globalItems.filter((g) => g.role.includes(user.role));
 
   return (

@@ -13,6 +13,7 @@
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
     "axios": "^1.12.2",
+    "formik": "^2.4.6",
     "framer-motion": "^12.23.22",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
@@ -20,7 +21,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-dropzone": "^14.3.8",
-    "sonner": "^2.0.7"
+    "sonner": "^2.0.7",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
