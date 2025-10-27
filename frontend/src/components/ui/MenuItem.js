@@ -57,7 +57,7 @@ function MenuCard({ item, onAddToCart }) {
           <h3 className="text-lg font-medium text-foreground truncate">
             {item.itemName}
           </h3>
-          {dietIcon}
+          <div className="min-w-5">{dietIcon}</div>
         </div>
 
         <p className="text-text-secondary text-sm mb-3 line-clamp-2">
