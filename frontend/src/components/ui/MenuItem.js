@@ -1,51 +1,68 @@
 "use client";
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { Leaf, Egg, Drumstick, ShoppingCart } from "lucide-react";
+import { useCart } from "../providers/CartProvider";
 
-export default function UserMenu({ items = [], onAddToCart }) {
+export default function UserMenu({ items = [] }) {
+  const { addCart, cart, removeCart } = useCart();
+
+  if (!items.length) {
+    return (
+      <div className="w-full py-20 text-center text-muted-foreground italic">
+        No menu items available.
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full py-10">
+    <section className="w-full py-10">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-2xl font-semibold text-foreground mb-6">Menu</h2>
-
-        {items.length === 0 ? (
-          <div className="text-center text-text-muted py-16 italic">
-            No menu items available.
-          </div>
-        ) : (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {items.map((item) => (
-              <MenuCard key={item._id} item={item} onAddToCart={onAddToCart} />
-            ))}
-          </div>
-        )}
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {items.map((item) => (
+            <MemoizedMenuCard
+              key={item._id}
+              item={item}
+              inCart={cart.some((c) => c._id === item._id)}
+              addCart={addCart}
+              removeCart={removeCart}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-function MenuCard({ item, onAddToCart }) {
-  const dietIcon =
-    item.dietType === "veg" ? (
-      <Leaf size={16} className="text-green-600" />
-    ) : item.dietType === "egg" ? (
-      <Egg size={16} className="text-yellow-600" />
-    ) : (
-      <Drumstick size={16} className="text-red-600" />
-    );
+const MenuCard = ({ item, inCart, addCart, removeCart }) => {
+  const dietIcon = useMemo(() => {
+    switch (item.dietType) {
+      case "veg":
+        return <Leaf size={16} className="text-green-600" />;
+      case "egg":
+        return <Egg size={16} className="text-yellow-600" />;
+      default:
+        return <Drumstick size={16} className="text-red-600" />;
+    }
+  }, [item.dietType]);
+
+  const handleClick = () => (inCart ? removeCart(item._id) : addCart(item));
+
+  const isAvailable = item.available !== false;
+  const imageUrl = `${
+    process.env.NEXT_PUBLIC_SERVER_URL
+  }${item.thumbnail?.replace(/\\/g, "/")}`;
 
   return (
-    <div className="bg-surface border border-border rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col">
+    <article className="bg-surface border border-border rounded-xl shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col">
       <div className="relative w-full h-40 overflow-hidden">
         <img
-          src={
-            process.env.NEXT_PUBLIC_SERVER_URL +
-            item.thumbnail?.replace("\\", "/")
-          }
+          src={imageUrl}
           alt={item.itemName}
-          className="w-full h-full object-cover hover:scale-105 transition-transform"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          loading="lazy"
         />
-        {!item.available && (
+        {!isAvailable && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white font-semibold text-sm">
             Unavailable
           </div>
@@ -57,7 +74,7 @@ function MenuCard({ item, onAddToCart }) {
           <h3 className="text-lg font-medium text-foreground truncate">
             {item.itemName}
           </h3>
-          <div className="min-w-5">{dietIcon}</div>
+          {dietIcon}
         </div>
 
         <p className="text-text-secondary text-sm mb-3 line-clamp-2">
@@ -69,20 +86,23 @@ function MenuCard({ item, onAddToCart }) {
             ₹{item.price}
           </span>
           <button
-            disabled={!item.available}
-            onClick={() => onAddToCart && onAddToCart(item)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition
-              ${
-                item.available
-                  ? "bg-primary hover:bg-primary-hover text-white"
-                  : "bg-accent-surface text-text-muted cursor-not-allowed"
-              }`}
+            onClick={handleClick}
+            disabled={!isAvailable}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition ${
+              inCart
+                ? "text-primary border-2 border-primary hover:bg-primary hover:text-white"
+                : isAvailable
+                ? "bg-primary hover:bg-primary-hover text-white"
+                : "bg-accent-surface text-text-muted cursor-not-allowed"
+            }`}
           >
-            <ShoppingCart size={16} />
-            Add
+            {!inCart && <ShoppingCart size={16} />}
+            {inCart ? "Remove" : "Add"}
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
-}
+};
+
+const MemoizedMenuCard = memo(MenuCard);

@@ -4,9 +4,11 @@ import { motion } from "framer-motion";
 import { useAuth } from "../AuthProvider";
 import { ChevronDown, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { useCart } from "../CartProvider";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { cart } = useCart();
   let drptme;
   const [dropDown, setDropDown] = useState(false);
   return (
@@ -34,7 +36,7 @@ export default function Navbar() {
               <div className="relative">
                 <ShoppingCart className="text-primary/80 cursor-pointer hover:text-primary z-30" />
                 <div className="absolute rounded-full flex w-5 h-5 justify-center items-center z-10 bg-primary/60 border-white top-[-10] right-[-10]">
-                  6
+                  {cart.length}
                 </div>
               </div>
               {user ? (
