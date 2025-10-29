@@ -42,6 +42,13 @@ const tokenCheck = (role = "user") => {
           .json({ status: "error", message: "SuperAdmins only" });
       }
 
+      if (verified.status != "active")
+        return res.status(400).json({
+          status: "error",
+          message: "You are restricted from loggin in!",
+          reason: verified.status,
+        });
+
       req.user = verified; // attach decoded payload
       next();
     } catch (error) {

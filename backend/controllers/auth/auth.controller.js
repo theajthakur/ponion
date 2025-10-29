@@ -43,6 +43,23 @@ const handleAttemptLogin = async (req, res) => {
       message: `Your password for ${email} is incorrect!`,
     });
   let tokenUser = user.toObject();
+  function reason(reason) {
+    const err = {
+      active: "Your account is active. You can log in successfully.",
+      disabled:
+        "Your account has been disabled. Please contact the Administrator for assistance.",
+      pending_email:
+        "Your email is pending verification. Please verify it before attempting to log in. Contact the Administrator if you continue to face this issue.",
+    };
+
+    return err[reason] || "You are restricted from logging in!";
+  }
+
+  if (tokenUser.status != "active")
+    return res.status(400).json({
+      status: "error",
+      message: reason(tokenUser.status),
+    });
   if (user.role == "admin") {
     const restaurant = await Restaurant.findOne({ owner: user._id });
     if (restaurant) tokenUser.restaurant = restaurant;
