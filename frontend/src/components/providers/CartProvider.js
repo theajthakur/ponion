@@ -6,6 +6,7 @@ const CartContext = createContext();
 
 export default function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const [openCart, setOpenCart] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   useEffect(() => {
     try {
@@ -35,6 +36,7 @@ export default function CartProvider({ children }) {
 
   const addCart = (item) => {
     if (!item || !item._id) return;
+    item.quantity = 1;
     setCart((prev) => {
       const exists = prev.some((i) => i._id === item._id);
       if (exists) return prev;
@@ -48,8 +50,44 @@ export default function CartProvider({ children }) {
     toast("Item Removed!");
   };
 
+  const decreaseQty = (id) => {
+    setCart((prev) =>
+      prev
+        .map((item) => {
+          if (item._id === id) {
+            if ((item.quantity || 1) <= 1) {
+              toast.info("Item removed from cart");
+              return null;
+            }
+            return { ...item, quantity: (item.quantity || 1) - 1 };
+          }
+          return item;
+        })
+        .filter(Boolean)
+    );
+  };
+
+  const increaseQty = (id) => {
+    const updated = cart.map((item) =>
+      item._id === id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+    );
+
+    setCart(updated);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, setCart, addCart, removeCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        setCart,
+        addCart,
+        removeCart,
+        openCart,
+        setOpenCart,
+        decreaseQty,
+        increaseQty,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

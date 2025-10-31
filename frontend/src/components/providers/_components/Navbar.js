@@ -8,6 +8,7 @@ import { useCart } from "../CartProvider";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const { openCart, setOpenCart } = useCart();
   const { cart } = useCart();
   let drptme;
   const [dropDown, setDropDown] = useState(false);
@@ -33,7 +34,12 @@ export default function Navbar() {
 
           <div className="ms-auto">
             <div className="flex gap-2 sm:gap-3 md:gap-4 justify-center items-center">
-              <div className="relative">
+              <div
+                className="relative"
+                onClick={() => {
+                  setOpenCart((prev) => !prev);
+                }}
+              >
                 <ShoppingCart className="text-primary/80 cursor-pointer hover:text-primary z-30" />
                 <div className="absolute rounded-full flex w-5 h-5 justify-center items-center z-10 bg-primary/60 border-white top-[-10] right-[-10]">
                   {cart.length}
