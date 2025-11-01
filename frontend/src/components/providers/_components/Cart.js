@@ -2,6 +2,7 @@
 import React from "react";
 import { useCart } from "../CartProvider";
 import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
+import Link from "next/link";
 
 export default function CartSide() {
   const { openCart, cart, removeCart, decreaseQty, increaseQty } = useCart();
@@ -11,7 +12,7 @@ export default function CartSide() {
     0
   );
   return (
-    <div className="relative">
+    <div className="relative select-none">
       <div className="cart-container w-full md:w-sm fixed md:sticky top-0 left-0 h-screen bg-white shadow-2xl p-3 z-50">
         <h2 className="text-4xl flex items-center gap-2 justify-center w-full">
           <ShoppingCart /> Cart
@@ -33,20 +34,22 @@ export default function CartSide() {
                 className="flex items-center justify-between p-3 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-200"
               >
                 <div className="flex items-center gap-3">
-                  <div className="overflow-hidden rounded-xl">
+                  <div className="overflow-hidden w-20 h-20 rounded-xl">
                     <img
                       src={`${
                         process.env.NEXT_PUBLIC_SERVER_URL
                       }${item.thumbnail.replace(/\\/g, "/")}`}
                       alt={item.itemName}
-                      className="min-w-20 h-20 object-cover hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="">
                     <h2 className="text-base font-semibold text-gray-800 leading-tight">
-                      {item.itemName}
+                      {item.itemName?.length > 20
+                        ? `${item.itemName.substr(0, 15)}...`
+                        : item.itemName}
                     </h2>
                     <p
                       className={`text-xs mt-1 flex items-center gap-1 ${
@@ -76,16 +79,16 @@ export default function CartSide() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => decreaseQty(item._id)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                      className="w-4 h-4 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                     >
                       <Minus size={16} />
                     </button>
-                    <span className="text-base font-medium text-gray-700 min-w-[20px] text-center">
+                    <span className="text-base font-small text-gray-700 min-w-[20px] text-center">
                       {item.quantity || 1}
                     </span>
                     <button
                       onClick={() => increaseQty(item._id)}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                      className="w-4 h-4 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                     >
                       <Plus size={16} />
                     </button>
@@ -109,10 +112,12 @@ export default function CartSide() {
                   ₹{total.toLocaleString()}
                 </p>
               </div>
-              <button className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-sm flex items-center gap-2">
-                <ShoppingCart size={16} />
-                Proceed to Checkout
-              </button>
+              <Link href={"/checkout"}>
+                <button className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-sm flex items-center gap-2">
+                  <ShoppingCart size={16} />
+                  Proceed to Checkout
+                </button>
+              </Link>
             </div>
           )}
         </div>
