@@ -40,7 +40,9 @@ app.use("/api/", require("./routes/api/main.route"));
 // Protected Routes for logged in Users
 app.use(checkAuth);
 const profileRoute = require("./routes/user/profile.route");
+const paymentRoute = require("./routes/user/payment.route");
 app.use("/user/profile", profileRoute);
+app.use("/user/payments", paymentRoute);
 
 // Protected Routes for Admins Only
 app.use(checkAuthAdmin);
