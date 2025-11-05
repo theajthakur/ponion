@@ -1,9 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { MapPin, Home, Building2, Plus } from "lucide-react";
+import CheckoutConfirmation from "./CheckoutConfirmation";
 
-export default function SavedAddresses({ addresses = [], onAdd, setSetMode }) {
+export default function SavedAddresses({
+  addresses = [],
+  onAdd,
+  setSetMode,
+  orderAddress,
+  setOrderAddress,
+}) {
   const hasAddresses = addresses && addresses.length > 0;
 
   if (!hasAddresses) {
@@ -22,38 +29,42 @@ export default function SavedAddresses({ addresses = [], onAdd, setSetMode }) {
 
   return (
     <div className="space-y-4">
-      {addresses.map((addr) => (
-        <div
-          key={addr.id}
-          className="bg-surface rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-start sm:justify-between border border-border hover:shadow-md transition"
-        >
-          <div className="flex items-start gap-3 mb-3 sm:mb-0">
-            {addr.Label?.toLowerCase().includes("office") ? (
-              <Building2 className="text-secondary" />
-            ) : (
-              <Home className="text-primary" />
-            )}
-            <div>
-              <p className="font-semibold">{addr.Label || "Address"}</p>
-              <p className="text-sm text-secondary">
-                {addr.Flat}, {addr.Area}, {addr.Landmark}
-              </p>
-              <p className="text-sm text-secondary">
-                {addr.District}, {addr.State} - {addr.PinCode}
-              </p>
-              <p className="text-sm text-muted mt-1">
-                {addr.Name} ({addr.Mobile})
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => alert(`Selected: ${addr.Label}`)}
-            className="self-end sm:self-start px-4 py-2 rounded-xl bg-accent-surface text-foreground font-medium hover:bg-primary hover:text-white transition"
+      {orderAddress ? (
+        <CheckoutConfirmation address={orderAddress} />
+      ) : (
+        addresses.map((addr) => (
+          <div
+            key={addr.id}
+            className="bg-surface rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-start sm:justify-between border border-border hover:shadow-md transition"
           >
-            Deliver Here
-          </button>
-        </div>
-      ))}
+            <div className="flex items-start gap-3 mb-3 sm:mb-0">
+              {addr.Label?.toLowerCase().includes("office") ? (
+                <Building2 className="text-secondary" />
+              ) : (
+                <Home className="text-primary" />
+              )}
+              <div>
+                <p className="font-semibold">{addr.Label || "Address"}</p>
+                <p className="text-sm text-secondary">
+                  {addr.Flat}, {addr.Area}, {addr.Landmark}
+                </p>
+                <p className="text-sm text-secondary">
+                  {addr.District}, {addr.State} - {addr.PinCode}
+                </p>
+                <p className="text-sm text-muted mt-1">
+                  {addr.Name} ({addr.Mobile})
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setOrderAddress(addr)}
+              className="self-end sm:self-start px-4 py-2 rounded-xl bg-accent-surface text-foreground font-medium hover:bg-primary hover:text-white transition"
+            >
+              Deliver Here
+            </button>
+          </div>
+        ))
+      )}
     </div>
   );
 }

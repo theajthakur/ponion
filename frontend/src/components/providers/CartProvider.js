@@ -75,6 +75,11 @@ export default function CartProvider({ children }) {
     setCart(updated);
   };
 
+  const total = cart.reduce(
+    (acc, item) => acc + item.price * (item.quantity || 1),
+    0
+  );
+
   return (
     <CartContext.Provider
       value={{
@@ -86,6 +91,7 @@ export default function CartProvider({ children }) {
         setOpenCart,
         decreaseQty,
         increaseQty,
+        total,
       }}
     >
       {children}

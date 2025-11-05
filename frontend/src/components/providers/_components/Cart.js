@@ -2,15 +2,26 @@
 import React from "react";
 import { useCart } from "../CartProvider";
 import { Trash2, Plus, Minus, ShoppingCart } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartSide() {
-  const { openCart, cart, removeCart, decreaseQty, increaseQty } = useCart();
+  const router = useRouter();
+  const {
+    openCart,
+    setOpenCart,
+    cart,
+    removeCart,
+    decreaseQty,
+    increaseQty,
+    total,
+  } = useCart();
   if (!openCart) return "";
-  const total = cart.reduce(
-    (acc, item) => acc + item.price * (item.quantity || 1),
-    0
-  );
+
+  const checkout = () => {
+    setOpenCart(false);
+    router.push("/checkout");
+  };
+
   return (
     <div className="relative select-none">
       <div className="cart-container w-full md:w-sm fixed md:sticky top-0 left-0 h-screen bg-white shadow-2xl p-3 z-50">
@@ -112,12 +123,13 @@ export default function CartSide() {
                   ₹{total.toLocaleString()}
                 </p>
               </div>
-              <Link href={"/checkout"}>
-                <button className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-sm flex items-center gap-2">
-                  <ShoppingCart size={16} />
-                  Proceed to Checkout
-                </button>
-              </Link>
+              <button
+                onClick={checkout}
+                className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-5 py-2.5 rounded-full shadow-sm flex items-center gap-2"
+              >
+                <ShoppingCart size={16} />
+                Proceed to Checkout
+              </button>
             </div>
           )}
         </div>

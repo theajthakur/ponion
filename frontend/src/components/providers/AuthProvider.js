@@ -9,15 +9,16 @@ const AuthContext = createContext();
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(undefined);
   const serverURL = process.env.NEXT_PUBLIC_SERVER_URL;
 
   useEffect(() => {
-    const token = localStorage.getItem("ponion_token");
-    if (token) {
+    const tokenRaw = localStorage.getItem("ponion_token");
+    if (tokenRaw) {
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode(tokenRaw);
         setUser(decoded);
-        console.log(decoded);
+        setToken(tokenRaw);
       } catch (err) {
         console.error("Invalid token:", err);
         toast.error("Invalid token");
@@ -41,7 +42,9 @@ export default function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, serverURL }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, loading, serverURL, token }}
+    >
       {children}
     </AuthContext.Provider>
   );
