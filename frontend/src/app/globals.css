@@ -1,11 +1,8 @@
 @import "tailwindcss";
 @import "@fontsource/roboto-condensed/400.css"; /* Regular */
-@import "@fontsource/roboto-condensed/500.css"; /* Medium */
-@import "@fontsource/roboto-condensed/700.css"; /* Bold */
+@import "@fontsource/roboto-condensed/500.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
   --font-alsans: "Roboto Condensed", sans-serif;
 }
 
@@ -40,7 +37,5 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-alsans);
 }

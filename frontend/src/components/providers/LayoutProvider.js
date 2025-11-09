@@ -11,7 +11,7 @@ export default function LayoutProvider({ children }) {
       <ProtectedRoute allowedRoutes={["/", "/login", "/restaurant/*"]}>
         <CartProvider>
           <div className="flex flex-col md:flex-row w-full">
-            <div className="main-container">
+            <div className="main-container w-full">
               <div className="min-h-screen flex flex-col bg-white">
                 <div className="navbar-container">
                   <Navbar />

@@ -27,6 +27,7 @@ export default function CartProvider({ children }) {
 
   useEffect(() => {
     if (!isInitialized) return;
+    console.log(cart);
     try {
       localStorage.setItem("ponion_cart", JSON.stringify(cart));
     } catch (err) {
@@ -48,6 +49,10 @@ export default function CartProvider({ children }) {
   const removeCart = (id) => {
     setCart((prev) => prev.filter((item) => item._id !== id));
     toast("Item Removed!");
+  };
+
+  const clearCart = () => {
+    setCart([]);
   };
 
   const decreaseQty = (id) => {
@@ -87,6 +92,7 @@ export default function CartProvider({ children }) {
         setCart,
         addCart,
         removeCart,
+        clearCart,
         openCart,
         setOpenCart,
         decreaseQty,
