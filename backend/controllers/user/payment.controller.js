@@ -1,6 +1,7 @@
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Menu = require("../../models/Menu");
+const Order = require("../../models/Order");
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
@@ -21,9 +22,15 @@ const razorpayProceed = async (amount) => {
   }
 };
 
-const isAvailable = async (id) => {
-  const item = await Menu.findOne({ _id: id });
+const isAvailable = async (cart, req) => {
+  const item = await Menu.findOne({ _id: cart._id });
   if (!item) return { status: false, message: "No item available." };
+  await Order.create({
+    userId: req.user._id,
+    menuId: cart._id,
+    price: item.price * cart.quantity,
+    quantity: cart.quantity,
+  });
   return { status: true, item };
 };
 
@@ -36,7 +43,7 @@ const handlePlaceOrder = async (req, res) => {
   try {
     // Step 1: Check availability for each cart item
     const availabilityChecks = await Promise.all(
-      cart.map(async (e) => await isAvailable(e._id))
+      cart.map(async (e) => await isAvailable(e, req))
     );
 
     // Step 2: Filter only valid items
