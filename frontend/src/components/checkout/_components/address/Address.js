@@ -4,32 +4,36 @@ import InputAddress from "./InputAddress";
 import useAddresses from "./utils";
 import { Plus } from "lucide-react";
 
-export default function address() {
+export default function Address() {
   const [setMode, setSetMode] = useState(false);
   const { addresses, addAddress, removeAddress } = useAddresses();
   const [orderAddress, setOrderAddress] = useState(false);
+
   return (
-    <div>
+    <div className="w-full max-w-4xl mx-auto">
       {setMode ? (
         <InputAddress onBack={() => setSetMode(false)} onSave={addAddress} />
       ) : (
-        <>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-foreground">Select Delivery Address</h2>
+            {!orderAddress && (
+              <button
+                onClick={() => setSetMode(true)}
+                className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-primary/40 font-semibold"
+              >
+                <Plus size={18} strokeWidth={2.5} /> Add New
+              </button>
+            )}
+          </div>
+
           <SavedAddresses
             addresses={addresses}
             orderAddress={orderAddress}
             setOrderAddress={setOrderAddress}
+            setSetMode={setSetMode}
           />
-          {!orderAddress && (
-            <div className="mt-5 flex justify-center">
-              <button
-                onClick={() => setSetMode(true)}
-                className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-2xl hover:bg-[var(--color-primary-hover)] transition"
-              >
-                <Plus size={18} /> Add Address
-              </button>
-            </div>
-          )}
-        </>
+        </div>
       )}
     </div>
   );

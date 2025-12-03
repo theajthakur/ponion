@@ -54,84 +54,65 @@ export default function Restaurants() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {restaurants.map((rest) => (
                   <motion.div
-                    initial={{ x: 50, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, ease: "linear" }}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
                     key={rest._id}
-                    className="bg-surface border border-border rounded-2xl shadow hover:shadow-lg transition overflow-hidden flex flex-col"
+                    className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:-translate-y-1"
                   >
-                    <img
-                      src={
-                        rest.banner
-                          ? process.env.NEXT_PUBLIC_SERVER_URL +
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={
+                          rest.banner
+                            ? process.env.NEXT_PUBLIC_SERVER_URL +
                             rest.banner.replace("public", "")
-                          : "restaurants/demo.avif"
-                      }
-                      alt={rest.name}
-                      className="h-40 w-full object-cover"
-                    />
+                            : "restaurants/demo.avif"
+                        }
+                        alt={rest.name}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-foreground shadow-sm">
+                        20-30 min
+                      </div>
+                      {rest.owner.rating > 0 && (
+                        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+                          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                          <span className="font-bold text-sm">{rest.owner.rating}</span>
+                        </div>
+                      )}
+                    </div>
 
-                    {/* Content */}
-                    <div className="p-4 flex flex-col flex-1">
-                      <h2 className="text-lg font-bold text-foreground">
-                        {rest.name}
-                      </h2>
-
-                      <div className="mt-2 text-sm text-text-secondary flex items-center gap-2">
-                        <User className="w-4 h-4 text-text-muted" />
-                        <span>
-                          {rest.owner.name} ({rest.owner.role})
-                        </span>
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-2">
+                        <h2 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          {rest.name}
+                        </h2>
                       </div>
 
-                      <div className="mt-2 text-sm text-text-secondary flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-text-muted" />
-                        <span>
-                          {rest.address.raw || "No Address Available"}
-                        </span>
+                      <p className="text-text-secondary text-sm mb-4 line-clamp-2">
+                        {rest.description || "Experience the best food in town with our specially curated menu."}
+                      </p>
+
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-center gap-2 text-sm text-text-muted">
+                          <MapPin className="w-4 h-4 text-primary" />
+                          <span className="truncate">{rest.address.raw || "Location not available"}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-text-muted">
+                          <User className="w-4 h-4 text-primary" />
+                          <span>{rest.owner.name}</span>
+                        </div>
                       </div>
 
-                      <div className="mt-2 text-sm text-text-secondary flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-text-muted" />
-                        <span>
-                          {new Date(rest.createdAt).toLocaleDateString(
-                            "en-IN",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="mt-auto pt-5 flex w-full">
-                        <span
-                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                            rest.owner.rating > 0
-                              ? "bg-success text-card"
-                              : "bg-info text-card"
-                          }`}
-                        >
-                          {rest.owner.rating > 0 ? (
-                            <>
-                              <Star className="w-3 h-3" />
-                              {rest.owner.rating}
-                            </>
-                          ) : (
-                            "No Rating given"
-                          )}
-                        </span>
-                        <button
-                          onClick={() => {
-                            window.location.href = `/restaurant/${rest?.restaurantId}`;
-                          }}
-                          className="px-3 hover:px-4 transition-all duration-300 py-1 ms-auto cursor-pointer rounded-lg bg-secondary text-white font-semibold hover:bg-secondary-hover inline-flex items-center gap-2"
-                        >
-                          <ArrowRight />
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => {
+                          window.location.href = `/restaurant/${rest?.restaurantId}`;
+                        }}
+                        className="w-full py-3 rounded-xl bg-surface border-2 border-primary/10 text-primary font-bold hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group-hover:border-primary"
+                      >
+                        View Menu <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </motion.div>
                 ))}

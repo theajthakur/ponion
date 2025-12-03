@@ -44,9 +44,7 @@ export default function MenuItem({ restaurantID }) {
       {loading ? (
         <Loader />
       ) : (
-        <div className="bg-surface rounded-2xl px-2 md:px-6 border border-border shadow-md">
-          <UserMenu items={menu} />
-        </div>
+        <UserMenu items={menu} />
       )}
     </>
   );

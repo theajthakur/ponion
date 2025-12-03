@@ -1,41 +1,47 @@
 @import "tailwindcss";
 @import "@fontsource/roboto-condensed/400.css"; /* Regular */
 @import "@fontsource/roboto-condensed/500.css";
+@import "@fontsource/alan-sans/500.css";
+@import "@fontsource/alan-sans/700.css";
 
 :root {
-  --font-alsans: "Roboto Condensed", sans-serif;
+  --font-alsans: "Alan Sans", sans-serif;
+  --font-roboto: "Roboto Condensed", sans-serif;
 }
 
 @theme inline {
   /* Backgrounds */
-  --color-background: #ffffff; /* main background */
-  --color-surface: #f7f7f7; /* cards, panels */
-  --color-accent-surface: #fff7e6; /* highlights, featured items */
+  --color-background: #f8f9fa; /* Light Gray for contrast */
+  --color-surface: #ffffff; /* White cards */
+  --color-accent-surface: #fff0f1; /* Light red tint */
 
   /* Text / Foreground */
-  --color-foreground: #171717; /* primary text */
-  --color-text-secondary: #555555; /* secondary text */
-  --color-text-muted: #888888; /* muted text */
+  --color-foreground: #1d3557; /* Dark Blue for text */
+  --color-text-secondary: #457b9d; /* Steel Blue */
+  --color-text-muted: #a8dadc; /* Light Blue */
 
   /* Primary & Secondary / Actions */
-  --color-primary: #ff4c4c; /* main CTA buttons, highlights */
-  --color-primary-hover: #e04343;
-  --color-secondary: #ffa451; /* secondary buttons, badges */
-  --color-secondary-hover: #e68b3d;
+  --color-primary: #e63946; /* Vibrant Red */
+  --color-primary-hover: #d62828;
+  --color-secondary: #457b9d; /* Steel Blue */
+  --color-secondary-hover: #1d3557;
 
   /* Success / Info / Feedback */
-  --color-success: #8dd13e; /* available items, success states */
-  --color-info: #ffe066; /* promotions, highlights */
+  --color-success: #2a9d8f; /* Teal */
+  --color-info: #e9c46a; /* Yellow */
+  --color-warning: #f4a261; /* Orange */
 
   /* Borders / Dividers */
-  --color-border: #e0e0e0; /* subtle dividers */
+  --color-border: #e1e4e8;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-alsans);
+  --font-mono: var(--font-roboto);
 }
 
 body {
   font-family: var(--font-alsans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }

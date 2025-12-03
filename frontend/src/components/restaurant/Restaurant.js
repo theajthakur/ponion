@@ -47,82 +47,64 @@ export default function RestaurantPage({ resolvedParams }) {
   return (
     <>
       {!loading ? (
-        <div className="min-h-[30vh] bg-background text-foreground font-sans">
+        <div className="min-h-screen bg-background text-foreground font-sans pb-20">
           {restaurant.name ? (
             <>
-              <div className="relative h-64 w-full">
+              {/* Hero Section */}
+              <div className="relative h-[40vh] lg:h-[50vh] w-full overflow-hidden">
+                <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
-                  src={`${
-                    process.env.NEXT_PUBLIC_SERVER_URL
-                  }${restaurant.banner.replace("public", "")}`}
+                  src={`${process.env.NEXT_PUBLIC_SERVER_URL
+                    }${restaurant.banner.replace("public", "")}`}
                   alt={restaurant.name}
-                  className="w-full h-full object-cover rounded-2xl"
+                  className="w-full h-full object-cover"
                 />
-              </div>
-              <div className="max-w-5xl mx-auto p-6 space-y-6">
-                {/* Basic Info */}
-                <div className="bg-surface p-6 rounded-2xl border border-border shadow-md space-y-4">
-                  <div>
-                    <h1 className="text-2xl font-bold text-primary text-shadow-2xs stroke-2 drop-shadow-lg">
-                      {restaurant.name.toUpperCase()}
+                <div className="absolute bottom-0 left-0 w-full z-20 bg-gradient-to-t from-black/80 to-transparent pt-20 pb-10 px-4 sm:px-6 lg:px-8">
+                  <div className="max-w-7xl mx-auto">
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-4 tracking-tight">
+                      {restaurant.name}
                     </h1>
+                    <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm sm:text-base font-medium">
+                      <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <span>{restaurant.rating > 0 ? restaurant.rating : "New"}</span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                        <User className="w-4 h-4" />
+                        <span>{restaurant.owner.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                        <MapPin className="w-4 h-4" />
+                        <span>{restaurant.address.raw}</span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                        <Calendar className="w-4 h-4" />
+                        <span>Since {new Date(restaurant.createdAt).getFullYear()}</span>
+                      </div>
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Sticky Header for Mobile/Scroll */}
+              <div className="sticky top-20 z-40 bg-white/80 backdrop-blur-md border-b border-border shadow-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-foreground truncate">
+                    Menu
+                  </h2>
                   <div className="flex items-center gap-2">
-                    <User className="w-5 h-5 text-secondary" />
-                    <p className="font-semibold">
-                      Owned by{" "}
-                      <span className="text-primary">
-                        {restaurant.owner.name}
-                      </span>
-                    </p>
-                    <span
-                      className={`ml-2 px-3 py-1 rounded-full text-xs font-semibold ${
-                        restaurant.owner.status === "active"
-                          ? "bg-success text-white"
-                          : "bg-info text-foreground"
-                      }`}
-                    >
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${restaurant.owner.status === "active"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                      }`}>
                       {restaurant.owner.status}
                     </span>
                   </div>
-
-                  <div className="flex items-center gap-2 text-text-secondary">
-                    <MapPin className="w-4 h-4" />
-                    <p>{restaurant.address.raw}</p>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-text-secondary">
-                    <Calendar className="w-4 h-4" />
-                    <p>
-                      Joined on{" "}
-                      {new Date(restaurant.createdAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }
-                      )}
-                    </p>
-                  </div>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-2">
-                    <Star
-                      className={`w-5 h-5 ${
-                        restaurant.rating > 0
-                          ? "text-yellow-400"
-                          : "text-border"
-                      }`}
-                      fill={restaurant.rating > 0 ? "currentColor" : "none"}
-                    />
-                    {restaurant.rating > 0 ? (
-                      <p className="font-semibold">{restaurant.rating} / 5</p>
-                    ) : (
-                      <p className="text-text-muted">No ratings yet</p>
-                    )}
-                  </div>
                 </div>
+              </div>
+
+              {/* Menu Section */}
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <MenuItem restaurantID={restaurantID} />
               </div>
             </>
