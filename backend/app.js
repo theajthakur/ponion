@@ -7,7 +7,11 @@ const cors = require("cors");
 require("dotenv").config();
 const PORT = process.env.SERVER_PORT || 7000;
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://ponion.vercel.app",
+];
 app.use(
   cors({
     origin: function (origin, callback) {
