@@ -63,12 +63,7 @@ export default function Restaurants() {
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
-                        src={
-                          rest.banner
-                            ? process.env.NEXT_PUBLIC_SERVER_URL +
-                            rest.banner.replace("public", "")
-                            : "restaurants/demo.avif"
-                        }
+                        src={rest.banner || "restaurants/demo.avif"}
                         alt={rest.name}
                         className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                       />
@@ -78,7 +73,9 @@ export default function Restaurants() {
                       {rest.owner.rating > 0 && (
                         <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
                           <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          <span className="font-bold text-sm">{rest.owner.rating}</span>
+                          <span className="font-bold text-sm">
+                            {rest.owner.rating}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -91,13 +88,16 @@ export default function Restaurants() {
                       </div>
 
                       <p className="text-text-secondary text-sm mb-4 line-clamp-2">
-                        {rest.description || "Experience the best food in town with our specially curated menu."}
+                        {rest.description ||
+                          "Experience the best food in town with our specially curated menu."}
                       </p>
 
                       <div className="space-y-2 mb-6">
                         <div className="flex items-center gap-2 text-sm text-text-muted">
                           <MapPin className="w-4 h-4 text-primary" />
-                          <span className="truncate">{rest.address.raw || "Location not available"}</span>
+                          <span className="truncate">
+                            {rest.address.raw || "Location not available"}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-text-muted">
                           <User className="w-4 h-4 text-primary" />

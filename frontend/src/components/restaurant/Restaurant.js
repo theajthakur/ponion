@@ -54,8 +54,7 @@ export default function RestaurantPage({ resolvedParams }) {
               <div className="relative h-[40vh] lg:h-[50vh] w-full overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
-                  src={`${process.env.NEXT_PUBLIC_SERVER_URL
-                    }${restaurant.banner.replace("public", "")}`}
+                  src={restaurant.banner}
                   alt={restaurant.name}
                   className="w-full h-full object-cover"
                 />
@@ -67,7 +66,9 @@ export default function RestaurantPage({ resolvedParams }) {
                     <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm sm:text-base font-medium">
                       <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                         <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                        <span>{restaurant.rating > 0 ? restaurant.rating : "New"}</span>
+                        <span>
+                          {restaurant.rating > 0 ? restaurant.rating : "New"}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                         <User className="w-4 h-4" />
@@ -79,7 +80,9 @@ export default function RestaurantPage({ resolvedParams }) {
                       </div>
                       <div className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
                         <Calendar className="w-4 h-4" />
-                        <span>Since {new Date(restaurant.createdAt).getFullYear()}</span>
+                        <span>
+                          Since {new Date(restaurant.createdAt).getFullYear()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -93,10 +96,13 @@ export default function RestaurantPage({ resolvedParams }) {
                     Menu
                   </h2>
                   <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${restaurant.owner.status === "active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                      }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                        restaurant.owner.status === "active"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
                       {restaurant.owner.status}
                     </span>
                   </div>

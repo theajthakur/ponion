@@ -14,7 +14,7 @@ import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
 import { useAuth } from "../AuthProvider";
 import { toast } from "sonner";
 
-export default function AdminLogin({ onToggle }) {
+export default function AdminLogin({ onToggle, pageChange }) {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -182,6 +182,17 @@ export default function AdminLogin({ onToggle }) {
               Login
             </Button>
           </form>
+          <p className="mt-5">
+            New restaurant,
+            <span
+              onClick={() => {
+                pageChange("register");
+              }}
+              className="ms-1 text-primary hover:text-secondary cursor-pointer"
+            >
+              Apply Now
+            </span>
+          </p>
         </Paper>
       )}
     </Box>

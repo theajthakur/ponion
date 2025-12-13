@@ -9,14 +9,7 @@ const RestaurantCard = ({ data }) => {
 
   return (
     <div className="max-w-xl mx-auto bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-      <img
-        src={`${process.env.NEXT_PUBLIC_SERVER_URL}/${banner.replace(
-          "public\\",
-          ""
-        )}`}
-        alt={name}
-        className="w-full h-56 object-cover"
-      />
+      <img src={banner} alt={name} className="w-full h-56 object-cover" />
       <div className="p-6 space-y-4">
         <div>
           <h2 className="text-2xl font-semibold text-gray-800">{name}</h2>

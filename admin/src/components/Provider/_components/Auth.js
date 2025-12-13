@@ -3,13 +3,17 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import AdminLogin from "./Login";
 import RestaurantRegisterForm from "./Register";
-
+import { useRouter } from "next/navigation";
 export default function Auth() {
+  const router = useRouter();
   const centerDivRef = useRef(null);
   const centerPosRef = useRef({ x: 0, y: 0 });
   const [eyePos, setEyePos] = useState({ x: 0, y: 0 });
   const [active, setActive] = useState(true);
   const [blink, setBlink] = useState(false);
+  useEffect(() => {
+    router.push("/");
+  }, []);
 
   const updateCenterPos = () => {
     if (centerDivRef.current) {
@@ -18,6 +22,11 @@ export default function Auth() {
       const centerY = rect.top + rect.height / 2;
       centerPosRef.current = { x: centerX, y: centerY };
     }
+  };
+
+  const pageChange = (page) => {
+    if (page == "login") return setActive(true);
+    setActive(false);
   };
 
   useEffect(() => {
@@ -114,9 +123,12 @@ export default function Auth() {
 
       <div className="flex h-full w-full justify-center items-center overflow-y-scroll">
         {active ? (
-          <AdminLogin onToggle={handleToggle} />
+          <AdminLogin onToggle={handleToggle} pageChange={pageChange} />
         ) : (
-          <RestaurantRegisterForm onToggle={handleToggle} />
+          <RestaurantRegisterForm
+            onToggle={handleToggle}
+            pageChange={pageChange}
+          />
         )}
       </div>
     </div>

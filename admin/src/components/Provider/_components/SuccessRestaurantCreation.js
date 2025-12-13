@@ -2,6 +2,7 @@
 
 import { CheckCircle } from "@mui/icons-material";
 import { Card, CardContent, Typography, Button } from "@mui/material";
+import Link from "next/link";
 
 export default function SuccessRestaurantCreation() {
   return (
@@ -20,7 +21,10 @@ export default function SuccessRestaurantCreation() {
           <Button
             variant="contained"
             color="primary"
-            className="rounded-xl px-6 py-2"
+            className="rounded-xl px-6 py-2 mt-3"
+            onClick={() => {
+              window.location.reload();
+            }}
           >
             Go to Home
           </Button>

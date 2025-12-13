@@ -1,7 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Mail, User, Shield, Calendar, Circle, User2 } from "lucide-react";
+import Button from "@/ui/Button";
+import { useAuth } from "@/components/Provider/AuthProvider";
+import axios from "axios";
+import { toast } from "sonner";
 
-const UserCard = ({ users = [] }) => {
+const UserCard = ({ users = [], setUsers }) => {
+  const { token } = useAuth();
+
+  const activeUser = async (ownerId) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/superadmin/user/approve`,
+        { ownerId },
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = response.data;
+
+      setUsers((prev) =>
+        prev.map((u) => (u._id === ownerId ? { ...u, status: "active" } : u))
+      );
+      toast.success(data.message);
+    } catch (err) {
+      console.error("Error approving user:", err);
+      toast.error(err.message || "Something went wrong");
+    }
+  };
   const statusColors = {
     active: "bg-green-500",
     disabled: "bg-red-500",
@@ -48,17 +78,29 @@ const UserCard = ({ users = [] }) => {
                   <span>{new Date(user.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Circle
-                  className={`w-3 h-3 ${
-                    statusColors[user.status] || "bg-gray-400"
-                  } rounded-full`}
-                  fill="currentColor"
-                />
-                <span className="capitalize text-sm font-medium text-gray-800">
-                  {user.status}
-                </span>
-              </div>
+              {user.status == "pending_email" && user.role == "admin" ? (
+                <div className="flex">
+                  <Button
+                    onClick={() => {
+                      activeUser(user._id);
+                    }}
+                  >
+                    Activate
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Circle
+                    className={`w-3 h-3 ${
+                      statusColors[user.status] || "bg-gray-400"
+                    } rounded-full`}
+                    fill="currentColor"
+                  />
+                  <span className="capitalize text-sm font-medium text-gray-800">
+                    {user.status}
+                  </span>
+                </div>
+              )}
             </div>
           ))}
         </div>

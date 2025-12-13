@@ -47,10 +47,7 @@ export default function MenuList({ data = [], onEdit, onDelete, className }) {
                 >
                   <td className="p-3 border-b border-border">
                     <img
-                      src={
-                        process.env.NEXT_PUBLIC_SERVER_URL + item.thumbnail ||
-                        "/placeholder.jpg"
-                      }
+                      src={item.thumbnail || "/placeholder.jpg"}
                       alt={item.itemName}
                       className="w-12 h-12 rounded-md object-cover border border-border"
                     />

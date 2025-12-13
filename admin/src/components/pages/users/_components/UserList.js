@@ -10,16 +10,21 @@ export default function UserList() {
   const [users, setUsers] = useState([]);
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus =
-      (roleFilter === "all" || user.role === roleFilter) &&
-      (statusFilter === "all" || user.status === statusFilter);
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    setFilteredUsers(
+      users.filter((user) => {
+        const matchesSearch =
+          user.name.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus =
+          (roleFilter === "all" || user.role === roleFilter) &&
+          (statusFilter === "all" || user.status === statusFilter);
+        return matchesSearch && matchesStatus;
+      })
+    );
+  }, [users, roleFilter, statusFilter]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +81,7 @@ export default function UserList() {
           <MenuItem value="pending_email">Email Pending</MenuItem>
         </TextField>
       </Box>
-      <UserCard users={filteredUsers} />
+      <UserCard users={filteredUsers} setUsers={setFilteredUsers} />
     </Box>
   );
 }

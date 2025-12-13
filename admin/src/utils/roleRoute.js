@@ -40,24 +40,24 @@ export const globalItems = [
     path: "/restaurants",
     role: ["superadmin"],
   },
-  {
-    text: "Analytics",
-    icon: <BarChartOutlined />,
-    path: "/analytics",
-    role: ["admin", "superadmin"],
-  },
-  {
-    text: "Discounts",
-    icon: <LocalOfferOutlined />,
-    path: "/promotions",
-    role: ["admin", "superadmin"],
-  },
-  {
-    text: "Settings",
-    icon: <SettingsOutlined />,
-    path: "/settings",
-    role: ["superadmin"],
-  },
+  // {
+  //   text: "Analytics",
+  //   icon: <BarChartOutlined />,
+  //   path: "/analytics",
+  //   role: ["admin", "superadmin"],
+  // },
+  // {
+  //   text: "Discounts",
+  //   icon: <LocalOfferOutlined />,
+  //   path: "/promotions",
+  //   role: ["admin", "superadmin"],
+  // },
+  // {
+  //   text: "Settings",
+  //   icon: <SettingsOutlined />,
+  //   path: "/settings",
+  //   role: ["superadmin"],
+  // },
   {
     text: "Profile",
     icon: <PersonOutlined />,

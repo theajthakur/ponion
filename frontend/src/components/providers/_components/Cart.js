@@ -47,9 +47,7 @@ export default function CartSide() {
                 <div className="flex items-center gap-3">
                   <div className="overflow-hidden w-20 h-20 rounded-xl">
                     <img
-                      src={`${
-                        process.env.NEXT_PUBLIC_SERVER_URL
-                      }${item.thumbnail.replace(/\\/g, "/")}`}
+                      src={item.thumbnail}
                       alt={item.itemName}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"

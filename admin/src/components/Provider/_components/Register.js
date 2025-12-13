@@ -1,22 +1,12 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  Paper,
-  Typography,
-  MenuItem,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { Visibility, VisibilityOff, Mail } from "@mui/icons-material";
+import React, { useState } from "react";
+import { Mail } from "@mui/icons-material";
 import { toast } from "sonner";
 import SingleImageUploader from "./ImageUploader";
 import SuccessRestaurantCreation from "./SuccessRestaurantCreation";
 import { Eye, EyeOff } from "lucide-react";
 
-export default function RestaurantRegisterForm() {
+export default function RestaurantRegisterForm({ pageChange, onToggle }) {
   const [registered, setRegistered] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -97,7 +87,6 @@ export default function RestaurantRegisterForm() {
         return;
       }
 
-      // Build FormData
       const formPayload = new FormData();
       formPayload.append("email", formData.email);
       formPayload.append("password", formData.password);
@@ -116,7 +105,7 @@ export default function RestaurantRegisterForm() {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/signup/restaurant`,
         {
           method: "POST",
-          body: formPayload, // no JSON.stringify, send FormData directly
+          body: formPayload,
         }
       );
 
@@ -163,97 +152,114 @@ export default function RestaurantRegisterForm() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit}>
-                  <div className="mb-3 relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                    />
-                  </div>
+                <div>
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-3 relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      />
+                    </div>
 
-                  <div className="mb-3 relative">
+                    <div className="mb-3 relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                        className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
+                    </div>
+
                     <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      placeholder="Password"
-                      value={formData.password}
+                      type="text"
+                      name="name"
+                      placeholder="Full Name"
+                      value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                      className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      required
+                      className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-gray-700"
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                  </div>
+                      <option value="">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
 
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                  />
-
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    required
-                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-gray-700"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-
-                  <input
-                    type="text"
-                    name="restaurantName"
-                    placeholder="Restaurant Name"
-                    value={formData.restaurantName}
-                    onChange={handleChange}
-                    required
-                    className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                  />
-
-                  <input
-                    type="text"
-                    name="address"
-                    placeholder="Address of Restaurant"
-                    value={formData.address.raw}
-                    onChange={handleChange}
-                    className="w-full mb-5 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
-                  />
-
-                  <div className="mb-5">
-                    <SingleImageUploader
-                      onChange={(file) => setUploadedImage(file)}
+                    <input
+                      type="text"
+                      name="restaurantName"
+                      placeholder="Restaurant Name"
+                      value={formData.restaurantName}
+                      onChange={handleChange}
+                      required
+                      className="w-full mb-3 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
                     />
-                  </div>
 
-                  <input type="hidden" name="lat" value={formData.lat} />
-                  <input type="hidden" name="lng" value={formData.lng} />
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Address of Restaurant"
+                      value={formData.address.raw}
+                      onChange={handleChange}
+                      className="w-full mb-5 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"
+                    />
 
-                  <button
-                    type="submit"
-                    className="w-full bg-primary text-card font-semibold font-sans py-3 rounded-lg hover:bg-secondary transition"
-                  >
-                    Register
-                  </button>
-                </form>
+                    <div className="mb-5">
+                      <SingleImageUploader
+                        onChange={(file) => setUploadedImage(file)}
+                      />
+                    </div>
+
+                    <input type="hidden" name="lat" value={formData.lat} />
+                    <input type="hidden" name="lng" value={formData.lng} />
+
+                    <button
+                      type="submit"
+                      className="w-full bg-primary text-card font-semibold font-sans py-3 rounded-lg hover:bg-secondary transition"
+                    >
+                      Register
+                    </button>
+                  </form>
+                  <p className="mt-5">
+                    Already have a Restaurant,
+                    <span
+                      onClick={() => {
+                        pageChange("login");
+                      }}
+                      className="ms-1 text-primary hover:text-secondary cursor-pointer"
+                    >
+                      Manage Now
+                    </span>
+                  </p>
+                </div>
               )}
             </div>
           </div>
