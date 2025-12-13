@@ -13,6 +13,8 @@ const {
 } = require("../../lib/template/email.verify.template");
 const sendEmail = require("../../utils/email.utils");
 const ActivationLink = require("../../models/ActivationLink");
+const validateImage = require("../../utils/fileType.utils");
+const uploadToCloudinary = require("../../utils/cloudinary.utils");
 
 const sendVerificationEmail = async (name, userId, to) => {
   try {
@@ -149,10 +151,11 @@ const handleNewRestaurantUser = async (req, res) => {
   }
 
   const { email, password, name, gender, restaurantName, address } = value;
-  const imageFile = req.file;
 
   try {
-    // Check duplicate user
+    // -------------------------
+    // 1. Check duplicate user
+    // -------------------------
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({
@@ -161,10 +164,42 @@ const handleNewRestaurantUser = async (req, res) => {
       });
     }
 
-    // Hash password
-    const hashedPass = await bcrypt.hash(password, 10);
+    // -------------------------
+    // 2. Validate image
+    // -------------------------
+    if (!req.file) {
+      return res.status(400).json({
+        status: "error",
+        message: "Restaurant banner image is required",
+      });
+    }
 
-    // Create user
+    const { valid, message } = await validateImage(req.file.buffer);
+    if (!valid) {
+      return res.status(400).json({
+        status: "error",
+        message,
+      });
+    }
+
+    // -------------------------
+    // 3. Upload banner to Cloudinary
+    // -------------------------
+    const uploadResult = await uploadToCloudinary(req.file.buffer, {
+      folder: 'restaurant_banners',
+      format: 'webp',
+      transformation: [
+        { width: 1600, height: 600, crop: 'fill' },
+        { quality: 'auto' },
+      ],
+    });
+
+    console.log(uploadResult);
+
+    // -------------------------
+    // 4. Create user
+    // -------------------------
+    const hashedPass = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
       name,
@@ -174,17 +209,18 @@ const handleNewRestaurantUser = async (req, res) => {
       role: "admin",
     });
 
-    // Create restaurant linked to user
+    // -------------------------
+    // 5. Create restaurant
+    // -------------------------
     const restaurantId = uuidv4();
-    const newFilename = `${restaurantId}.jpg`;
-    const newFilePath = path.join("public", "uploads", newFilename);
-    fs.renameSync(imageFile.path, newFilePath);
+
     await Restaurant.create({
       restaurantId,
       owner: newUser._id,
       name: restaurantName,
       address,
-      banner: newFilePath,
+      banner: uploadResult.secure_url, // Cloudinary URL
+      bannerPublicId: uploadResult.public_id, // OPTIONAL (recommended)
     });
 
     return res.status(201).json({
@@ -194,8 +230,10 @@ const handleNewRestaurantUser = async (req, res) => {
         userId: newUser._id,
       },
     });
+
   } catch (err) {
     console.error("Error creating restaurant user:", err);
+
     return res.status(500).json({
       status: "error",
       message: "Internal Server Error. Please try again later.",
