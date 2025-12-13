@@ -1,30 +1,21 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async ({ to, subject, html }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
-
-    // Email options
-    const mailOptions = {
-      from: `"PONION" <${process.env.GMAIL_USER}>`,
+    const data = await resend.emails.send({
+      from: `"PONION" <onboarding@resend.dev>`,
       to,
       subject,
       html,
-    };
+    });
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent: %s", info.messageId);
-    return info;
+    console.log("Email sent:", data.id);
+    return data;
   } catch (err) {
     console.error("Error sending email:", err);
-    throw err;
+    return null; // prevents app crash (same behavior as safe SMTP)
   }
 };
 
