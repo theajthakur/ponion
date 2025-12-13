@@ -9,6 +9,7 @@ export default function Input({
   icon: Icon,
   error,
   type = "text",
+  ...props
 }) {
   return (
     <div className="flex flex-col w-full">
@@ -29,6 +30,7 @@ export default function Input({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          {...props}
           className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-primary
             ${Icon ? "pl-10" : ""} 
             ${error ? "border-red-500" : "border-border"} 

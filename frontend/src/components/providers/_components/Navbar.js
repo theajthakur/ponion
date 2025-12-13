@@ -1,17 +1,23 @@
 "use client";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { useAuth } from "../AuthProvider";
 import { ChevronDown, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../CartProvider";
-
+import { usePathname } from "next/navigation";
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const { openCart, setOpenCart } = useCart();
+  const { setOpenCart } = useCart();
   const { cart } = useCart();
   let drptme;
   const [dropDown, setDropDown] = useState(false);
+  const pathname = usePathname();
+  useEffect(() => {
+    if (pathname == "/login" && user) {
+      logout();
+      return;
+    }
+  }, []);
   return (
     <motion.nav
       className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/70 border-b border-white/20 shadow-sm"

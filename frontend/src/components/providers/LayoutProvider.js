@@ -1,7 +1,7 @@
 import Footer from "./_components/Footer";
 import Navbar from "./_components/Navbar";
 import { Toaster } from "sonner";
-import AuthProvider, { ProtectedRoute, useAuth } from "./AuthProvider";
+import AuthProvider, { ProtectedRoute } from "./AuthProvider";
 import CartProvider from "./CartProvider";
 import CartSide from "./_components/Cart";
 

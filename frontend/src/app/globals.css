@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import "@fontsource/roboto-condensed/400.css"; /* Regular */
+@import "@fontsource/roboto-condensed/400.css";
+/* Regular */
 @import "@fontsource/roboto-condensed/500.css";
 @import "@fontsource/alan-sans/500.css";
 @import "@fontsource/alan-sans/700.css";
@@ -11,25 +12,37 @@
 
 @theme inline {
   /* Backgrounds */
-  --color-background: #f8f9fa; /* Light Gray for contrast */
-  --color-surface: #ffffff; /* White cards */
-  --color-accent-surface: #fff0f1; /* Light red tint */
+  --color-background: #f8f9fa;
+  /* Light Gray for contrast */
+  --color-surface: #ffffff;
+  /* White cards */
+  --color-accent-surface: #fff0f1;
+  /* Light red tint */
 
   /* Text / Foreground */
-  --color-foreground: #1d3557; /* Dark Blue for text */
-  --color-text-secondary: #457b9d; /* Steel Blue */
-  --color-text-muted: #a8dadc; /* Light Blue */
+  --color-foreground: #1d3557;
+  /* Dark Blue for text */
+  --color-text-secondary: #457b9d;
+  /* Steel Blue */
+  --color-text-muted: #a8dadc;
+  /* Light Blue */
+  --color-primary-foreground: #ffffff;
 
   /* Primary & Secondary / Actions */
-  --color-primary: #e63946; /* Vibrant Red */
+  --color-primary: #e63946;
+  /* Vibrant Red */
   --color-primary-hover: #d62828;
-  --color-secondary: #457b9d; /* Steel Blue */
+  --color-secondary: #457b9d;
+  /* Steel Blue */
   --color-secondary-hover: #1d3557;
 
   /* Success / Info / Feedback */
-  --color-success: #2a9d8f; /* Teal */
-  --color-info: #e9c46a; /* Yellow */
-  --color-warning: #f4a261; /* Orange */
+  --color-success: #2a9d8f;
+  /* Teal */
+  --color-info: #e9c46a;
+  /* Yellow */
+  --color-warning: #f4a261;
+  /* Orange */
 
   /* Borders / Dividers */
   --color-border: #e1e4e8;

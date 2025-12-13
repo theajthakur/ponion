@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { Mail, Lock, Loader } from "lucide-react";
 import Input from "../ui/Input";
 import { toast } from "sonner";
+import { Checkbox } from "../ui/checkbox";
+import { Button } from "../ui/button";
+import { motion } from "framer-motion";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,8 +51,8 @@ export default function LoginForm() {
   }, [loading]);
 
   return (
-    <div className="flex items-center justify-center min-h-[70vh] bg-background p-4">
-      <div className="w-full max-w-md bg-surface p-8 rounded-lg shadow-md">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center justify-center min-h-[70vh] bg-background p-4">
+      <div className="w-full lg:w-md bg-surface p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-foreground mb-6 text-center">
           Login to PONION
         </h2>
@@ -82,12 +85,7 @@ export default function LoginForm() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="w-4 h-4 accent-primary"
-                />
+                <Checkbox checked={remember} onCheckedChange={setRemember} />
                 Remember me
               </label>
               <a href="#" className="text-sm text-primary hover:underline">
@@ -95,12 +93,7 @@ export default function LoginForm() {
               </a>
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-2 bg-primary text-white rounded font-semibold hover:bg-primary-hover transition"
-            >
-              Login
-            </button>
+            <Button type="submit" className={"w-full"}>Login</Button>
           </form>
         )}
 
@@ -108,6 +101,6 @@ export default function LoginForm() {
           <p className="text-red-500 text-sm mt-4 text-center">{error}</p>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
