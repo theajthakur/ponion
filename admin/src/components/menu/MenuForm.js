@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
     .test(
       "fileSize",
       "Thumbnail is too large",
-      (value) => value && value.size <= 5000000 // 5MB limit
+      (value) => value && value.size <= 10000000 // 10MB limit
     ),
   dietType: Yup.string().required("Diet type is required"),
 });
