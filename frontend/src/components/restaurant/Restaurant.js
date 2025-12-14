@@ -54,7 +54,7 @@ export default function RestaurantPage({ resolvedParams }) {
               <div className="relative h-[40vh] lg:h-[50vh] w-full overflow-hidden">
                 <div className="absolute inset-0 bg-black/40 z-10" />
                 <img
-                  src={restaurant.banner}
+                  src={restaurant.thumbnail}
                   alt={restaurant.name}
                   className="w-full h-full object-cover"
                 />
