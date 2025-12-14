@@ -19,8 +19,9 @@ export default function UserMenu({ items = [] }) {
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-2xl font-semibold text-foreground mb-6">Menu</h2>
         <div
-          className={`grid grid-cols-1 gap-6 ${openCart ? "lg:grid-cols-2" : "lg:grid-cols-3"
-            }`}
+          className={`grid grid-cols-1 gap-6 ${
+            openCart ? "lg:grid-cols-2" : "lg:grid-cols-3"
+          }`}
         >
           {items.map((item) => (
             <MemoizedMenuCard
@@ -52,14 +53,12 @@ const MenuCard = ({ item, inCart, addCart, removeCart }) => {
   const handleClick = () => (inCart ? removeCart(item._id) : addCart(item));
 
   const isAvailable = item.available !== false;
-  const imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL
-    }${item.thumbnail?.replace(/\\/g, "/")}`;
 
   return (
     <article className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:-translate-y-1 flex flex-col h-full">
       <div className="relative w-full h-48 overflow-hidden">
         <img
-          src={imageUrl}
+          src={item.thumbnail}
           alt={item.itemName}
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
@@ -82,7 +81,8 @@ const MenuCard = ({ item, inCart, addCart, removeCart }) => {
         </div>
 
         <p className="text-text-secondary text-sm mb-4 line-clamp-2 leading-relaxed">
-          {item.description || `Delicious and freshly prepared ${item.itemName}.`}
+          {item.description ||
+            `Delicious and freshly prepared ${item.itemName}.`}
         </p>
 
         <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
@@ -92,12 +92,13 @@ const MenuCard = ({ item, inCart, addCart, removeCart }) => {
           <button
             onClick={handleClick}
             disabled={!isAvailable}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm ${inCart
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 shadow-sm ${
+              inCart
                 ? "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
                 : isAvailable
-                  ? "bg-primary text-white hover:bg-primary-hover hover:shadow-primary/30 hover:scale-105"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
+                ? "bg-primary text-white hover:bg-primary-hover hover:shadow-primary/30 hover:scale-105"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            }`}
           >
             {!inCart && <ShoppingCart size={16} strokeWidth={2.5} />}
             {inCart ? "Remove" : "Add"}
