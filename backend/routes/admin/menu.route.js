@@ -7,16 +7,14 @@ const {
 const multer = require("multer");
 const { v4: uuid } = require("uuid");
 const router = express.Router();
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, uuid() + " - " + file.originalname);
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
   },
 });
-
-const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 }, });
 
 router.post(
   "/menu/upload",
