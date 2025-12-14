@@ -9,7 +9,7 @@ const PORT = process.env.SERVER_PORT || 7000;
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:3001",
+  "https://ponion-admin.vercel.app",
   "https://ponion.vercel.app",
 ];
 app.use(
