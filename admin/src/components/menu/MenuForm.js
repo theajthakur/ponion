@@ -15,13 +15,7 @@ const validationSchema = Yup.object({
     .required("Price is required")
     .positive("Price must be positive"),
   available: Yup.boolean().required("Availability is required"),
-  thumbnail: Yup.mixed()
-    .required("Thumbnail is required")
-    .test(
-      "fileSize",
-      "Thumbnail is too large",
-      (value) => value && value.size <= 10000000 // 10MB limit
-    ),
+  thumbnail: Yup.mixed().required("Thumbnail is required"),
   dietType: Yup.string().required("Diet type is required"),
 });
 
