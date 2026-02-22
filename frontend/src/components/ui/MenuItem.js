@@ -80,7 +80,7 @@ const MenuCard = ({ item, inCart, addCart, removeCart }) => {
           </h3>
         </div>
 
-        <p className="text-text-secondary text-sm mb-4 line-clamp-2 leading-relaxed">
+        <p className="text-secondary text-sm mb-4 line-clamp-2 leading-relaxed">
           {item.description ||
             `Delicious and freshly prepared ${item.itemName}.`}
         </p>

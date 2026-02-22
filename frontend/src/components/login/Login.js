@@ -84,7 +84,7 @@ export default function LoginForm() {
             />
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
+              <label className="flex items-center gap-2 text-sm text-secondary cursor-pointer">
                 <Checkbox checked={remember} onCheckedChange={setRemember} />
                 Remember me
               </label>

@@ -12,7 +12,7 @@ export default function RestaurantNotFound() {
       <Coffee className="absolute bottom-10 right-10 w-20 h-20 text-primary opacity-15 animate-bounce-slow" />
       <AlertCircle className="w-20 h-20 text-warning mb-4" />
       <h1 className="text-6xl font-extrabold text-foreground mb-2">404</h1>
-      <p className="text-text-secondary text-lg mb-6 max-w-md">
+      <p className="text-secondary text-lg mb-6 max-w-md">
         The page you are looking for does not exists. <br />
         Maybe it moved or never existed.
       </p>

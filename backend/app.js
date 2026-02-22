@@ -52,6 +52,8 @@ app.use("/user/payments", paymentRoute);
 app.use(checkAuthAdmin);
 const menuRoute = require("./routes/admin/menu.route");
 app.use("/admin", menuRoute);
+const orderRoute = require("./routes/user/order.route");
+app.use("/user/", orderRoute);
 
 // Protected Routes for SuperAdmins Only
 app.use(checkAuthSuperAdmin);

@@ -10,7 +10,7 @@ export default function MenuList({ data = [], onEdit, onDelete, className }) {
       <h2 className="text-xl font-semibold text-foreground mb-4">Menu Items</h2>
       <div className=" max-h-[80vh] overflow-scroll">
         <table className="w-full text-sm text-left border-collapse">
-          <thead className="bg-accent-surface text-text-secondary">
+          <thead className="bg-accent-surface text-secondary">
             <tr>
               <th className="p-3 border-b border-border font-medium">Image</th>
               <th className="p-3 border-b border-border font-medium">
@@ -34,7 +34,7 @@ export default function MenuList({ data = [], onEdit, onDelete, className }) {
               <tr>
                 <td
                   colSpan="6"
-                  className="p-4 text-center text-text-muted italic"
+                  className="p-4 text-center text-muted italic"
                 >
                   No menu items found
                 </td>
@@ -55,7 +55,7 @@ export default function MenuList({ data = [], onEdit, onDelete, className }) {
                   <td className="p-3 border-b border-border text-foreground font-medium">
                     {item.itemName}
                   </td>
-                  <td className="p-3 border-b border-border text-text-secondary">
+                  <td className="p-3 border-b border-border text-secondary">
                     ₹{item.price}
                   </td>
                   <td className="p-3 border-b border-border">

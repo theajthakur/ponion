@@ -41,7 +41,7 @@ export default function SingleImageUploader({ onChange }) {
       >
         <input {...getInputProps()} />
         {!image ? (
-          <div className="flex flex-col items-center justify-center gap-2 text-center text-text-muted">
+          <div className="flex flex-col items-center justify-center gap-2 text-center text-muted">
             <UploadCloud className="w-10 h-10 text-primary" />
             <p className="text-secondary">
               Drag & drop an image here, or click to select

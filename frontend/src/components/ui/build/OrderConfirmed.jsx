@@ -1,12 +1,26 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Confetti } from "../confetti";
 import { ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export function OrderConfirmed() {
   const confettiRef = useRef(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Fire confetti on mount
+    confettiRef.current?.fire({});
+
+    // Redirect after 3 seconds
+    const timer = setTimeout(() => {
+      router.push("/orders");
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
 
   return (
     <div className="bg-background relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-lg">
@@ -23,6 +37,7 @@ export function OrderConfirmed() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            onClick={() => router.push("/orders")}
             className="p-3 bg-primary hover:bg-primary/90 cursor-pointer text-white rounded-2xl mt-5"
           >
             <div className="flex justify-center gap-3">

@@ -58,7 +58,7 @@ export default function CheckoutConfirmation({ address, onChange }) {
   if (!address) {
     return (
       <div className="p-6 bg-surface rounded-2xl text-center border border-border">
-        <p className="text-text-secondary text-lg">No address found.</p>
+        <p className="text-secondary text-lg">No address found.</p>
       </div>
     );
   }
@@ -90,13 +90,13 @@ export default function CheckoutConfirmation({ address, onChange }) {
               </div>
               <div className="space-y-1">
                 <h3 className="font-bold text-lg text-foreground">Delivery Address</h3>
-                <p className="text-text-secondary leading-relaxed">
+                <p className="text-secondary leading-relaxed">
                   {address.Name}, {address.Flat}, {address.Landmark}, {address.Area}
                 </p>
-                <p className="text-text-secondary">
+                <p className="text-secondary">
                   {address.District}, {address.State} - <span className="font-semibold">{address.PinCode}</span>
                 </p>
-                <p className="text-text-muted text-sm font-medium mt-2 flex items-center gap-2">
+                <p className="text-muted text-sm font-medium mt-2 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-green-500"></span>
                   {address.Mobile}
                 </p>
@@ -105,11 +105,11 @@ export default function CheckoutConfirmation({ address, onChange }) {
 
             <div className="space-y-4">
               <div className="flex justify-between items-center py-4 border-t border-dashed border-border">
-                <span className="text-text-secondary font-medium">Subtotal</span>
+                <span className="text-secondary font-medium">Subtotal</span>
                 <span className="font-semibold text-foreground">₹{total}</span>
               </div>
               <div className="flex justify-between items-center pb-4 border-b border-border">
-                <span className="text-text-secondary font-medium">Delivery Fee</span>
+                <span className="text-secondary font-medium">Delivery Fee</span>
                 <span className="font-semibold text-success">Free</span>
               </div>
               <div className="flex justify-between items-center text-xl pt-2">
@@ -133,7 +133,7 @@ export default function CheckoutConfirmation({ address, onChange }) {
               </button>
             )}
 
-            <p className="text-center text-xs text-text-muted font-medium">
+            <p className="text-center text-xs text-muted font-medium">
               By placing this order, you agree to our Terms of Service and Privacy Policy.
             </p>
           </div>

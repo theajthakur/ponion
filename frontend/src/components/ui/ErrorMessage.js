@@ -36,7 +36,7 @@ export default function StatusMessage({
           ? "Heads up!"
           : "Warning"}
       </h2>
-      <p className="text-text-secondary text-sm sm:text-base max-w-md">
+      <p className="text-secondary text-sm sm:text-base max-w-md">
         {message}
       </p>
       <div className="flex justify-center w-full">

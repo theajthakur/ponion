@@ -87,19 +87,19 @@ export default function Restaurants() {
                         </h2>
                       </div>
 
-                      <p className="text-text-secondary text-sm mb-4 line-clamp-2">
+                      <p className="text-secondary text-sm mb-4 line-clamp-2">
                         {rest.description ||
                           "Experience the best food in town with our specially curated menu."}
                       </p>
 
                       <div className="space-y-2 mb-6">
-                        <div className="flex items-center gap-2 text-sm text-text-muted">
+                        <div className="flex items-center gap-2 text-sm text-muted">
                           <MapPin className="w-4 h-4 text-primary" />
                           <span className="truncate">
                             {rest.address.raw || "Location not available"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-text-muted">
+                        <div className="flex items-center gap-2 text-sm text-muted">
                           <User className="w-4 h-4 text-primary" />
                           <span>{rest.owner.name}</span>
                         </div>
@@ -127,7 +127,7 @@ export default function Restaurants() {
                 <h2 className="text-lg font-semibold text-foreground mb-2">
                   No Restaurants Available
                 </h2>
-                <p className="text-sm text-text-secondary">
+                <p className="text-sm text-secondary">
                   Currently, no restaurants are serving. Please check back
                   later!
                 </p>

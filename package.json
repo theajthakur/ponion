@@ -1,0 +1,8 @@
+{
+    "name": "ponion",
+    "version": "1.0.0",
+    "private": false,
+    "scripts": {
+        "start": "cd backend && npm start && cd ../frontend && npm run dev"
+    }
+}

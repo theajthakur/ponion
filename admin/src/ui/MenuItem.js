@@ -9,7 +9,7 @@ export default function UserMenu({ items = [], onAddToCart }) {
         <h2 className="text-2xl font-semibold text-foreground mb-6">Menu</h2>
 
         {items.length === 0 ? (
-          <div className="text-center text-text-muted py-16 italic">
+          <div className="text-center text-muted py-16 italic">
             No menu items available.
           </div>
         ) : (
@@ -57,7 +57,7 @@ function MenuCard({ item, onAddToCart }) {
           {dietIcon}
         </div>
 
-        <p className="text-text-secondary text-sm mb-3 line-clamp-2">
+        <p className="text-secondary text-sm mb-3 line-clamp-2">
           Delicious and freshly prepared {item.itemName}.
         </p>
 
@@ -72,7 +72,7 @@ function MenuCard({ item, onAddToCart }) {
               ${
                 item.available
                   ? "bg-primary hover:bg-primary-hover text-white"
-                  : "bg-accent-surface text-text-muted cursor-not-allowed"
+                  : "bg-accent-surface text-muted cursor-not-allowed"
               }`}
           >
             <ShoppingCart size={16} />

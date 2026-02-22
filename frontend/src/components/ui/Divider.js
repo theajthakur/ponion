@@ -5,7 +5,7 @@ export default function Divider({ label }) {
     <div className="flex items-center my-6">
       <div className="flex-grow border-t border-border"></div>
       {label && (
-        <span className="px-4 text-sm font-medium text-text-muted">
+        <span className="px-4 text-sm font-medium text-muted">
           {label}
         </span>
       )}

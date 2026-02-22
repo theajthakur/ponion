@@ -77,7 +77,7 @@ export default function MenuForm({ className, onSave }) {
           </h2>
 
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
+            <label className="block text-sm font-medium text-secondary mb-1">
               Item Name
             </label>
             <Field
@@ -94,7 +94,7 @@ export default function MenuForm({ className, onSave }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
+            <label className="block text-sm font-medium text-secondary mb-1">
               Price (₹)
             </label>
             <Field
@@ -116,7 +116,7 @@ export default function MenuForm({ className, onSave }) {
               name="available"
               className="w-4 h-4 accent-primary"
             />
-            <label htmlFor="available" className="text-sm text-text-secondary">
+            <label htmlFor="available" className="text-sm text-secondary">
               Available
             </label>
             <ErrorMessage
@@ -127,7 +127,7 @@ export default function MenuForm({ className, onSave }) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
+            <label className="block text-sm font-medium text-secondary mb-1">
               Diet Type
             </label>
             <Field
@@ -148,7 +148,7 @@ export default function MenuForm({ className, onSave }) {
 
           {/* Thumbnail Upload */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
+            <label className="block text-sm font-medium text-secondary mb-1">
               Thumbnail
             </label>
             <div className="flex items-center gap-2">
@@ -159,11 +159,11 @@ export default function MenuForm({ className, onSave }) {
                 className="w-full p-2.5 border border-border rounded-md"
               />
               {values.thumbnail && (
-                <span className="text-sm text-text-muted">
+                <span className="text-sm text-muted">
                   {values.thumbnail.name}
                 </span>
               )}
-              <Upload size={18} className="text-text-muted" />
+              <Upload size={18} className="text-muted" />
             </div>
             <ErrorMessage
               name="thumbnail"

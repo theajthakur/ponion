@@ -52,16 +52,16 @@ export default function SavedAddresses({
                   </div>
                   <div>
                     <h3 className="font-bold text-foreground text-lg">{addr.Label || "Address"}</h3>
-                    <p className="text-sm text-text-muted font-medium">{addr.Name}</p>
+                    <p className="text-sm text-muted font-medium">{addr.Name}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-1 mb-6 text-text-secondary text-sm leading-relaxed">
+              <div className="space-y-1 mb-6 text-secondary text-sm leading-relaxed">
                 <p>{addr.Flat}, {addr.Area}</p>
                 <p>{addr.Landmark}</p>
                 <p>{addr.District}, {addr.State} - <span className="font-semibold text-foreground">{addr.PinCode}</span></p>
-                <p className="pt-2 flex items-center gap-2 text-text-muted">
+                <p className="pt-2 flex items-center gap-2 text-muted">
                   <span>📞</span> {addr.Mobile}
                 </p>
               </div>
@@ -80,9 +80,9 @@ export default function SavedAddresses({
             className="min-h-[200px] flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 transition-all duration-300 group"
           >
             <div className="p-4 rounded-full bg-surface group-hover:bg-white transition-colors shadow-sm">
-              <Plus size={24} className="text-text-muted group-hover:text-primary transition-colors" />
+              <Plus size={24} className="text-muted group-hover:text-primary transition-colors" />
             </div>
-            <span className="font-bold text-text-secondary group-hover:text-primary transition-colors">Add New Address</span>
+            <span className="font-bold text-secondary group-hover:text-primary transition-colors">Add New Address</span>
           </button>
         </div>
       )}

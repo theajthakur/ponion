@@ -20,7 +20,7 @@ export default function Hero() {
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-foreground leading-tight mb-6 tracking-tight">
                 Craving <span className="text-primary">Delicious</span> Food?
               </h1>
-              <p className="text-xl text-text-secondary mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              <p className="text-xl text-secondary mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
                 Order from the best local restaurants and get fresh food
                 delivered to your doorstep in minutes.
               </p>

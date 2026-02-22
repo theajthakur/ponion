@@ -45,7 +45,7 @@ export default function RestaurantViewer() {
                       <h3 className="text-xl font-bold text-foreground mb-2">
                         {e.name}
                       </h3>
-                      <p className="text-text-secondary mb-2">{e.cuisine}</p>
+                      <p className="text-secondary mb-2">{e.cuisine}</p>
 
                       {/* Rating */}
                       <div className="flex items-center gap-2 mb-2">
@@ -59,7 +59,7 @@ export default function RestaurantViewer() {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4 text-primary" />
-                          <span className="text-sm text-text-secondary">
+                          <span className="text-sm text-secondary">
                             {e.deliveryTime} mins
                           </span>
                         </div>

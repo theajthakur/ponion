@@ -151,7 +151,7 @@ export default function RestaurantList() {
       </Box>
 
       {filteredRestaurants.length === 0 && (
-        <Typography variant="body1" className="text-center text-text-secondary">
+        <Typography variant="body1" className="text-center text-secondary">
           No matching restaurants
         </Typography>
       )}
@@ -167,11 +167,11 @@ export default function RestaurantList() {
               <Typography className="text-foreground font-bold text-lg">
                 {rest.name}
               </Typography>
-              <Typography className="text-text-secondary text-sm mt-1">
+              <Typography className="text-secondary text-sm mt-1">
                 {rest.owner.name} ({rest.owner.role})
               </Typography>
               {rest.address?.raw ? (
-                <Typography className="text-text-secondary text-sm mt-1 break-all">
+                <Typography className="text-secondary text-sm mt-1 break-all">
                   {rest.address.raw}
                 </Typography>
               ) : (
