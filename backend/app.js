@@ -47,13 +47,13 @@ const profileRoute = require("./routes/user/profile.route");
 const paymentRoute = require("./routes/user/payment.route");
 app.use("/user/profile", profileRoute);
 app.use("/user/payments", paymentRoute);
+const orderRoute = require("./routes/user/order.route");
+app.use("/user/", orderRoute);
 
 // Protected Routes for Admins Only
 app.use(checkAuthAdmin);
 const menuRoute = require("./routes/admin/menu.route");
 app.use("/admin", menuRoute);
-const orderRoute = require("./routes/user/order.route");
-app.use("/user/", orderRoute);
 
 // Protected Routes for SuperAdmins Only
 app.use(checkAuthSuperAdmin);
