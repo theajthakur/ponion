@@ -170,9 +170,9 @@ export default function OrdersPage() {
                                                     {order.quantity} × ₹{order.price}
                                                 </span>
                                             </div>
-                                            <Link href={`#`}>
+                                            <Link href={`/order/${order._id}`}>
                                                 <Button variant="outline" className="rounded-xl border-gray-200 hover:border-primary hover:text-primary transition-colors text-xs font-bold px-5">
-                                                    Re-Order
+                                                    View Details
                                                 </Button>
                                             </Link>
                                         </div>

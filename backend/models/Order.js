@@ -14,6 +14,11 @@ const OrderSchema = mongoose.Schema(
     },
     price: { type: Number, required: 0 },
     quantity: { type: Number, default: 1 },
+    status: {
+      type: String,
+      enum: ["Confirmed", "Packed", "Shipped", "Delivered"],
+      default: "Confirmed",
+    },
   },
   {
     timestamps: true,

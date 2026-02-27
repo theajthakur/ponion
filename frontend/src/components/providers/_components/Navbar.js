@@ -27,7 +27,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <a href="/" className="text-3xl font-black tracking-tighter text-primary flex items-center gap-2">
               <span className="text-4xl">🍅</span> PONION
             </a>
@@ -78,6 +78,12 @@ export default function Navbar() {
                       transition={{ duration: 0.2, ease: "easeOut" }}
                       className="absolute z-50 right-0 mt-2 bg-white/90 backdrop-blur-xl border border-white/20 min-w-[200px] rounded-xl shadow-xl py-2 overflow-hidden"
                     >
+                      <a
+                        href="/orders"
+                        className="block px-4 py-2 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        My Orders
+                      </a>
                       <a
                         href="/profile"
                         className="block px-4 py-2 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors"
