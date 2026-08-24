@@ -10,7 +10,7 @@ export default async function handlePayment(order, callback, cancelCallback) {
   }
 
   const options = {
-    key: "rzp_test_RbAnmtGe8gnCv6",
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
     amount: order.amount,
     currency: order.currency,
     name: "Ponion",
