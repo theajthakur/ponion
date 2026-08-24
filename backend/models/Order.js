@@ -16,8 +16,37 @@ const OrderSchema = mongoose.Schema(
     quantity: { type: Number, default: 1 },
     status: {
       type: String,
-      enum: ["Confirmed", "Packed", "Shipped", "Delivered"],
+      enum: [
+        "Confirmed",
+        "Packed",
+        "Shipped",
+        "Delivered",
+        "pending",
+        "confirmed",
+        "failed",
+        "flagged_amount_mismatch",
+      ],
       default: "Confirmed",
+    },
+    merchantOrderId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    unitPrice: {
+      type: Number,
+    },
+    couponCode: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    razorpayPaymentId: {
+      type: String,
+    },
+    confirmedAt: {
+      type: Date,
     },
   },
   {

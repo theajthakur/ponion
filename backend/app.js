@@ -33,6 +33,9 @@ connectDB();
 const authRoute = require("./routes/auth/auth.route");
 app.use("/auth", authRoute);
 
+// Webhook route for Merchant OS - bypasses checkAuth
+app.use("/webhook/merchant-os", require("./routes/webhook/merchant-os.route"));
+
 const {
   checkAuth,
   checkAuthAdmin,

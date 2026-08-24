@@ -4,7 +4,8 @@
   "description": "An food delivery APP",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon app",
+    "test": "node --test tests/merchant-os.test.js"
   },
   "repository": {
     "type": "git",
