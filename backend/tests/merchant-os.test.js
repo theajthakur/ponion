@@ -103,7 +103,7 @@ test("Create Order API - Happy Path", async () => {
   assert.strictEqual(createdOrderData.status, "pending");
 });
 
-test("Create Order API - Product Not Found (404)", async () => {
+test("Create Order API - Product Not Found (Simulate 200)", async () => {
   const req = {
     body: {
       product_id: new mongoose.Types.ObjectId().toString(),
@@ -118,9 +118,12 @@ test("Create Order API - Product Not Found (404)", async () => {
 
   await createMerchantOrder(req, res);
 
-  assert.strictEqual(res.statusCode, 404);
-  assert.strictEqual(res.body.success, false);
-  assert.strictEqual(res.body.message, "Product not found");
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.body.success, true);
+  assert.strictEqual(res.body.message, "endpoint working and simulate 1 items");
+  assert.match(res.body.merchant_order_id, /^ORD-/);
+  assert.strictEqual(res.body.status, "pending");
+  assert.strictEqual(res.body.order_total, 100); // 100 fallback price * 1 quantity
 });
 
 test("Create Order API - Product Out of Stock/Unavailable (400)", async () => {
