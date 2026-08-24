@@ -4,6 +4,7 @@ const {
   fetchRestaurantById,
   fetchMenuByRestaurantId,
 } = require("../../controllers/api/restaurants.controller");
+const { searchProducts } = require("../../controllers/api/products.controller");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -12,5 +13,6 @@ router.get("/", (req, res) => {
 router.get("/restaurants", fetchActiveRestaurants);
 router.get("/restaurant/:restaurantId", fetchRestaurantById);
 router.get("/restaurant/:restaurantId/menu", fetchMenuByRestaurantId);
+router.get("/products/search", searchProducts);
 
 module.exports = router;

@@ -28,35 +28,48 @@ const verifyOrder = async (merchant_order_id, event_id) => {
     const remoteOrderTotal = orderDetails.order_total;
     const razorpayPaymentId = payment.razorpay_payment_id || payment.id || "unknown";
 
-    // Find the order again to get the latest state
-    const order = await Order.findOne({ merchantOrderId: merchant_order_id });
-    if (!order) {
+    // Find all matching orders (both single-item and multi-item)
+    const orders = await Order.find({
+      $or: [
+        { merchantOrderId: merchant_order_id },
+        { merchantOrderId: { $regex: `^${merchant_order_id}-` } }
+      ]
+    });
+    if (!orders || orders.length === 0) {
       console.error(`Order not found during verification: ${merchant_order_id}`);
       return;
     }
 
+    const localOrderTotal = orders.reduce((sum, order) => sum + order.price, 0);
+
     if (paymentStatus !== "captured") {
-      order.status = "failed";
-      await order.save();
+      for (const order of orders) {
+        order.status = "failed";
+        await order.save();
+      }
       console.log(`Order ${merchant_order_id} marked as failed. Payment status: ${paymentStatus}`);
       return;
     }
 
     // Compare amounts
-    if (remoteOrderTotal !== order.price) {
-      order.status = "flagged_amount_mismatch";
-      await order.save();
+    if (remoteOrderTotal !== localOrderTotal) {
+      for (const order of orders) {
+        order.status = "flagged_amount_mismatch";
+        await order.save();
+      }
       console.error(
-        `🚨 ALERT: Amount mismatch for order ${merchant_order_id}! Stored: ${order.price}, Paid: ${remoteOrderTotal}`
+        `🚨 ALERT: Amount mismatch for order ${merchant_order_id}! Stored: ${localOrderTotal}, Paid: ${remoteOrderTotal}`
       );
       return;
     }
 
-    // Happy Path
-    order.status = "confirmed";
-    order.razorpayPaymentId = razorpayPaymentId;
-    order.confirmedAt = new Date();
-    await order.save();
+    // Happy Path: Update all matching orders
+    for (const order of orders) {
+      order.status = "confirmed";
+      order.razorpayPaymentId = razorpayPaymentId;
+      order.confirmedAt = new Date();
+      await order.save();
+    }
 
     // Mark event_id as processed to prevent replay attacks / duplicates
     await WebhookEvent.create({ eventId: event_id });
@@ -83,14 +96,20 @@ const handleWebhook = async (req, res) => {
       return res.status(200).json({ success: true, message: "Event already processed" });
     }
 
-    // Check if order exists
-    const order = await Order.findOne({ merchantOrderId: merchant_order_id });
-    if (!order) {
+    // Check if order exists (single or multi-item)
+    const orders = await Order.find({
+      $or: [
+        { merchantOrderId: merchant_order_id },
+        { merchantOrderId: { $regex: `^${merchant_order_id}-` } }
+      ]
+    });
+    if (!orders || orders.length === 0) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // If order is already confirmed, no-op
-    if (order.status === "confirmed" || order.status === "Confirmed") {
+    // If all orders are already confirmed, no-op
+    const allConfirmed = orders.every((o) => o.status === "confirmed" || o.status === "Confirmed");
+    if (allConfirmed) {
       return res.status(200).json({ success: true, message: "Order already confirmed" });
     }
 

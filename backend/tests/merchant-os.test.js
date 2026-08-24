@@ -32,8 +32,10 @@ const makeMockRes = () => {
 
 // Save original mongoose and axios functions to restore later
 const originalMenuFindById = Menu.findById;
+const originalMenuFind = Menu.find;
 const originalOrderCreate = Order.create;
 const originalOrderFindOne = Order.findOne;
+const originalOrderFind = Order.find;
 const originalWebhookEventFindOne = WebhookEvent.findOne;
 const originalWebhookEventCreate = WebhookEvent.create;
 const originalAxiosGet = axios.get;
@@ -41,8 +43,10 @@ const originalSetTimeout = global.setTimeout;
 
 const restoreMocks = () => {
   Menu.findById = originalMenuFindById;
+  Menu.find = originalMenuFind;
   Order.create = originalOrderCreate;
   Order.findOne = originalOrderFindOne;
+  Order.find = originalOrderFind;
   WebhookEvent.findOne = originalWebhookEventFindOne;
   WebhookEvent.create = originalWebhookEventCreate;
   axios.get = originalAxiosGet;
@@ -66,12 +70,13 @@ test("Create Order API - Happy Path", async () => {
   const res = makeMockRes();
 
   // Mock database calls
-  Menu.findById = async (id) => {
-    return {
+  Menu.find = async (query) => {
+    const ids = query._id.$in;
+    return ids.map(id => ({
       _id: id,
       price: 150,
       available: true,
-    };
+    }));
   };
 
   let createdOrderData = null;
@@ -109,7 +114,7 @@ test("Create Order API - Product Not Found (404)", async () => {
   };
   const res = makeMockRes();
 
-  Menu.findById = async () => null;
+  Menu.find = async () => [];
 
   await createMerchantOrder(req, res);
 
@@ -129,12 +134,13 @@ test("Create Order API - Product Out of Stock/Unavailable (400)", async () => {
   };
   const res = makeMockRes();
 
-  Menu.findById = async (id) => {
-    return {
+  Menu.find = async (query) => {
+    const ids = query._id.$in;
+    return ids.map(id => ({
       _id: id,
       price: 100,
       available: false,
-    };
+    }));
   };
 
   await createMerchantOrder(req, res);
@@ -197,7 +203,7 @@ test("Webhook - Unknown Order (404)", async () => {
   const res = makeMockRes();
 
   WebhookEvent.findOne = async () => null;
-  Order.findOne = async () => null;
+  Order.find = async () => [];
 
   await handleWebhook(req, res);
 
@@ -230,7 +236,7 @@ test("Webhook & Verify - Happy Path (Confirmed & Matches Amount)", async () => {
     },
   };
 
-  Order.findOne = async () => mockOrder;
+  Order.find = async () => [mockOrder];
 
   // Mock Axios for verify endpoint response
   axios.get = async (url, config) => {
@@ -291,7 +297,7 @@ test("Webhook & Verify - Amount Mismatch (Flags Order)", async () => {
     },
   };
 
-  Order.findOne = async () => mockOrder;
+  Order.find = async () => [mockOrder];
 
   // Mock Axios returns order_total of 100 instead of 300
   axios.get = async () => {
@@ -327,7 +333,7 @@ test("Webhook & Verify - Merchant OS Verify Call Failure (Leaves Pending)", asyn
     },
   };
 
-  Order.findOne = async () => mockOrder;
+  Order.find = async () => [mockOrder];
 
   // Mock Axios throws error
   axios.get = async () => {
@@ -338,4 +344,134 @@ test("Webhook & Verify - Merchant OS Verify Call Failure (Leaves Pending)", asyn
 
   // Order status should remain pending due to transient failure
   assert.strictEqual(mockOrder.status, "pending");
+});
+
+test("Create Order API - Multi-item Cart (201)", async () => {
+  const pid1 = new mongoose.Types.ObjectId().toString();
+  const pid2 = new mongoose.Types.ObjectId().toString();
+  const req = {
+    body: {
+      cart: [
+        { product_id: pid1, quantity: 1 },
+        { product_id: pid2, quantity: 2 },
+      ],
+      address: "456 Test Ave",
+      user_id: new mongoose.Types.ObjectId().toString(),
+    },
+  };
+  const res = makeMockRes();
+
+  // Mock Menu.find
+  Menu.find = async (query) => {
+    const ids = query._id.$in.map(id => id.toString());
+    return [
+      { _id: pid1, price: 100, available: true },
+      { _id: pid2, price: 150, available: true },
+    ].filter(p => ids.includes(p._id.toString()));
+  };
+
+  const createdOrders = [];
+  Order.create = async (data) => {
+    createdOrders.push(data);
+    return { _id: `order_id_${createdOrders.length}`, ...data };
+  };
+
+  await createMerchantOrder(req, res);
+
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.success, true);
+  assert.match(res.body.merchant_order_id, /^ORD-/);
+  assert.strictEqual(res.body.status, "pending");
+  assert.strictEqual(res.body.order_total, 400); // 100*1 + 150*2
+
+  // Validate that 2 order documents were created
+  assert.strictEqual(createdOrders.length, 2);
+
+  // Validate the first order item
+  assert.strictEqual(createdOrders[0].menuId, pid1);
+  assert.strictEqual(createdOrders[0].price, 100);
+  assert.strictEqual(createdOrders[0].quantity, 1);
+  assert.strictEqual(createdOrders[0].merchantOrderId, `${res.body.merchant_order_id}-0`);
+
+  // Validate the second order item
+  assert.strictEqual(createdOrders[1].menuId, pid2);
+  assert.strictEqual(createdOrders[1].price, 300);
+  assert.strictEqual(createdOrders[1].quantity, 2);
+  assert.strictEqual(createdOrders[1].merchantOrderId, `${res.body.merchant_order_id}-1`);
+});
+
+test("Webhook & Verify - Multi-item Cart (Happy Path)", async () => {
+  global.setTimeout = () => {};
+  const req = {
+    body: {
+      event: "order.payment_completed",
+      event_id: "evt_multi_happy",
+      merchant_order_id: "ORD-MULTI-HAPPY",
+    },
+  };
+  const res = makeMockRes();
+
+  WebhookEvent.findOne = async () => null;
+
+  const savedOrders = [];
+  const mockOrder1 = {
+    merchantOrderId: "ORD-MULTI-HAPPY-0",
+    price: 100,
+    status: "pending",
+    async save() {
+      savedOrders.push(this);
+      return this;
+    },
+  };
+  const mockOrder2 = {
+    merchantOrderId: "ORD-MULTI-HAPPY-1",
+    price: 300,
+    status: "pending",
+    async save() {
+      savedOrders.push(this);
+      return this;
+    },
+  };
+
+  // Order.find should return both mock orders
+  Order.find = async (query) => {
+    return [mockOrder1, mockOrder2];
+  };
+
+  // Mock Axios for verify endpoint response (sums to 400)
+  axios.get = async (url, config) => {
+    assert.strictEqual(url, process.env.MERCHANT_OS_VERIFY_URL);
+    assert.strictEqual(config.params.merchant_order_id, "ORD-MULTI-HAPPY");
+    return {
+      status: 200,
+      data: {
+        payment: {
+          status: "captured",
+          razorpay_payment_id: "pay_multi_id",
+        },
+        data: {
+          order: {
+            order_total: 400,
+          },
+        },
+      },
+    };
+  };
+
+  WebhookEvent.create = async (data) => data;
+
+  // Run webhook endpoint handler
+  await handleWebhook(req, res);
+
+  assert.strictEqual(res.statusCode, 200);
+
+  // Manually run verifyOrder
+  await verifyOrder("ORD-MULTI-HAPPY", "evt_multi_happy");
+
+  // Validate state mutations on both orders
+  assert.strictEqual(savedOrders.length, 2);
+  assert.strictEqual(mockOrder1.status, "confirmed");
+  assert.strictEqual(mockOrder1.razorpayPaymentId, "pay_multi_id");
+  assert.strictEqual(mockOrder2.status, "confirmed");
+  assert.strictEqual(mockOrder2.razorpayPaymentId, "pay_multi_id");
 });
