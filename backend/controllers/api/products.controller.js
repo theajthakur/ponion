@@ -1,6 +1,7 @@
 const Menu = require("../../models/Menu");
 const Restaurant = require("../../models/Restaurant");
 const User = require("../../models/User");
+const Order = require("../../models/Order");
 
 const searchProducts = async (req, res) => {
   try {
@@ -144,6 +145,80 @@ const searchProducts = async (req, res) => {
   }
 };
 
+const searchProductsFromMenu = async (req, res) => {
+  try {
+    const { query, q, max_price, maxPrice } = req.query;
+
+    // 1. Get active restaurant IDs first to ensure we only search products from active restaurants
+    const activeOwners = await User.find({ status: "active" }).select("_id");
+    const activeOwnerIds = activeOwners.map((u) => u._id);
+
+    const activeRestaurants = await Restaurant.find({
+      owner: { $in: activeOwnerIds },
+    }).select("_id");
+    const activeRestaurantIds = activeRestaurants.map((r) => r._id);
+
+    // 2. Build the query object
+    const queryObj = {
+      restaurantId: { $in: activeRestaurantIds },
+      available: true, // Only show available items
+    };
+
+    // Robust Name/Search term filter
+    const searchTerm = query || q;
+    if (searchTerm && searchTerm.trim() !== "") {
+      const escapedSearch = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      queryObj.itemName = { $regex: escapedSearch, $options: "i" };
+    }
+
+    // Optional max price filter
+    const limitPrice = max_price || maxPrice;
+    if (limitPrice !== undefined && limitPrice !== "") {
+      const parsedMax = parseFloat(limitPrice);
+      if (!isNaN(parsedMax)) {
+        queryObj.price = { $lte: parsedMax };
+      }
+    }
+
+    // 3. Setup pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
+    const skip = (page - 1) * limit;
+
+    // 4. Execute query
+    const totalCount = await Menu.countDocuments(queryObj);
+    const products = await Menu.find(queryObj)
+      .sort({ itemName: 1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("restaurantId", "name restaurantId address banner rating");
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return res.status(200).json({
+      status: "success",
+      message: `${products.length} products found`,
+      data: {
+        products,
+        pagination: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages,
+        },
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while searching products",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   searchProducts,
+  searchProductsFromMenu,
 };
+

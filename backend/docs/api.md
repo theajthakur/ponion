@@ -165,3 +165,51 @@ The API requested by the Ponion backend to verify transaction integrity from Mer
   }
 }
 ```
+
+---
+
+## 4. Product Search API from Menu
+Finds products (available menu items) in the database across all active restaurants.
+
+* **URL**: `/products`
+* **Method**: `GET`
+* **Query Parameters**:
+  * `query` or `q` (String, optional): Case-insensitive search filter matching the product name (`itemName`).
+  * `max_price` or `maxPrice` (Number, optional): Filters products with price less than or equal to this value.
+  * `page` (Number, optional): Page number for pagination (defaults to 1).
+  * `limit` (Number, optional): Number of results per page (defaults to 10).
+
+### Request Example
+`GET /products?query=Pizza&max_price=500`
+
+### Expected JSON Response
+```json
+{
+  "status": "success",
+  "message": "1 products found",
+  "data": {
+    "products": [
+      {
+        "_id": "60d5ec49f3e4b42b10f2d4a1",
+        "itemName": "Veggie Pizza",
+        "price": 250,
+        "available": true,
+        "dietType": "veg",
+        "restaurantId": {
+          "_id": "60d5ec49f3e4b42b10f2d4a0",
+          "name": "Pizza Place"
+        },
+        "createdAt": "2026-08-27T20:05:10.000Z",
+        "updatedAt": "2026-08-27T20:05:10.000Z"
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "page": 1,
+      "limit": 10,
+      "totalPages": 1
+    }
+  }
+}
+```
+

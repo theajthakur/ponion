@@ -43,6 +43,7 @@ const {
 } = require("./middlewares/auth.middleware");
 
 app.use("/api/", require("./routes/api/main.route"));
+app.use("/products", require("./routes/products.route"));
 
 // Protected Routes for logged in Users
 app.use(checkAuth);
