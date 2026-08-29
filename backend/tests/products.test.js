@@ -122,7 +122,10 @@ test("searchProducts - Happy Path", async () => {
   assert.ok(menuFindQuery);
   assert.deepStrictEqual(menuFindQuery.restaurantId, { $in: [activeRestaurantId] });
   assert.strictEqual(menuFindQuery.available, true);
-  assert.deepStrictEqual(menuFindQuery.itemName, { $regex: "Pizza", $options: "i" });
+  assert.deepStrictEqual(menuFindQuery.$or, [
+    { itemName: { $regex: "Pizza", $options: "i" } },
+    { description: { $regex: "Pizza", $options: "i" } },
+  ]);
 });
 
 test("searchProducts - Diet Type & Price Filters", async () => {
@@ -258,7 +261,10 @@ test("searchProductsFromMenu - Happy Path", async () => {
   assert.ok(menuFindQuery);
   assert.deepStrictEqual(menuFindQuery.restaurantId, { $in: [activeRestaurantId] });
   assert.strictEqual(menuFindQuery.available, true);
-  assert.deepStrictEqual(menuFindQuery.itemName, { $regex: "Burger", $options: "i" });
+  assert.deepStrictEqual(menuFindQuery.$or, [
+    { itemName: { $regex: "Burger", $options: "i" } },
+    { description: { $regex: "Burger", $options: "i" } },
+  ]);
   assert.deepStrictEqual(menuFindQuery.price, { $lte: 300 });
 });
 

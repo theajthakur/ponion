@@ -40,7 +40,11 @@ const searchProducts = async (req, res) => {
     if (searchTerm && searchTerm.trim() !== "") {
       // Escape special characters to prevent regex injection
       const escapedSearch = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      query.itemName = { $regex: escapedSearch, $options: "i" };
+      const regexQuery = { $regex: escapedSearch, $options: "i" };
+      query.$or = [
+        { itemName: regexQuery },
+        { description: regexQuery },
+      ];
     }
 
     // Diet type filter (e.g. dietType=veg,egg or individual boolean flags)
@@ -168,7 +172,11 @@ const searchProductsFromMenu = async (req, res) => {
     const searchTerm = query || q;
     if (searchTerm && searchTerm.trim() !== "") {
       const escapedSearch = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      queryObj.itemName = { $regex: escapedSearch, $options: "i" };
+      const regexQuery = { $regex: escapedSearch, $options: "i" };
+      queryObj.$or = [
+        { itemName: regexQuery },
+        { description: regexQuery },
+      ];
     }
 
     // Optional max price filter
