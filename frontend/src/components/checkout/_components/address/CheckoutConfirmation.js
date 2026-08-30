@@ -35,6 +35,7 @@ export default function CheckoutConfirmation({ address, onChange }) {
   const checkout = () => {
     setLoading(true);
     try {
+      const addressId = address?._id || address?.id;
       fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/payments/create-order`,
         {
@@ -43,15 +44,30 @@ export default function CheckoutConfirmation({ address, onChange }) {
             Authorization: token,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ cart }),
+          body: JSON.stringify({
+            cart,
+            addressId,
+            address,
+          }),
         }
       )
         .then((res) => res.json())
         .then((data) => {
-          launchRazorpay(data.order);
+          if (data.order) {
+            launchRazorpay(data.order);
+          } else {
+            toast.error(data.message || "Failed to initiate payment");
+            setLoading(false);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error("Error creating order");
+          setLoading(false);
         });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 

@@ -10,6 +10,7 @@ process.env.MERCHANT_OS_VERIFY_URL = "http://localhost:8000/mock-verify";
 const Menu = require("../models/Menu");
 const Order = require("../models/Order");
 const WebhookEvent = require("../models/WebhookEvent");
+const Address = require("../models/Address");
 const { createMerchantOrder } = require("../controllers/user/order.controller");
 const { handleWebhook, verifyOrder } = require("../controllers/webhook/merchant-os.controller");
 
@@ -38,6 +39,7 @@ const originalOrderFindOne = Order.findOne;
 const originalOrderFind = Order.find;
 const originalWebhookEventFindOne = WebhookEvent.findOne;
 const originalWebhookEventCreate = WebhookEvent.create;
+const originalAddressFindOne = Address.findOne;
 const originalAxiosGet = axios.get;
 const originalSetTimeout = global.setTimeout;
 
@@ -49,6 +51,7 @@ const restoreMocks = () => {
   Order.find = originalOrderFind;
   WebhookEvent.findOne = originalWebhookEventFindOne;
   WebhookEvent.create = originalWebhookEventCreate;
+  Address.findOne = originalAddressFindOne;
   axios.get = originalAxiosGet;
   global.setTimeout = originalSetTimeout;
 };
@@ -58,13 +61,30 @@ test.afterEach(() => {
 });
 
 test("Create Order API - Happy Path", async () => {
+  const mockUserId = new mongoose.Types.ObjectId().toString();
+  const mockAddressId = new mongoose.Types.ObjectId().toString();
+
+  Address.findOne = async (query) => {
+    return {
+      _id: mockAddressId,
+      userId: mockUserId,
+      flatNo: "123",
+      street: "Test St",
+      city: "Test City",
+      district: "Test District",
+      state: "Test State",
+      pincode: "110001",
+      country: "India",
+    };
+  };
+
   const req = {
     body: {
       product_id: new mongoose.Types.ObjectId().toString(),
       quantity: 2,
       coupon_code: "SAVE10",
-      address: "123 Test St",
-      user_id: new mongoose.Types.ObjectId().toString(),
+      addressId: mockAddressId,
+      user_id: mockUserId,
     },
   };
   const res = makeMockRes();
@@ -99,17 +119,32 @@ test("Create Order API - Happy Path", async () => {
   assert.strictEqual(createdOrderData.unitPrice, 150);
   assert.strictEqual(createdOrderData.quantity, 2);
   assert.strictEqual(createdOrderData.couponCode, "SAVE10");
-  assert.strictEqual(createdOrderData.address, "123 Test St");
+  assert.strictEqual(createdOrderData.address.street, "Test St");
   assert.strictEqual(createdOrderData.status, "pending");
 });
 
 test("Create Order API - Product Not Found (Simulate 200)", async () => {
+  const mockUserId = new mongoose.Types.ObjectId().toString();
+  const mockAddressId = new mongoose.Types.ObjectId().toString();
+
+  Address.findOne = async () => ({
+    _id: mockAddressId,
+    userId: mockUserId,
+    flatNo: "123",
+    street: "Test St",
+    city: "Test City",
+    district: "Test District",
+    state: "Test State",
+    pincode: "110001",
+    country: "India",
+  });
+
   const req = {
     body: {
       product_id: new mongoose.Types.ObjectId().toString(),
       quantity: 1,
-      address: "123 Test St",
-      user_id: new mongoose.Types.ObjectId().toString(),
+      addressId: mockAddressId,
+      user_id: mockUserId,
     },
   };
   const res = makeMockRes();
@@ -127,12 +162,27 @@ test("Create Order API - Product Not Found (Simulate 200)", async () => {
 });
 
 test("Create Order API - Product Out of Stock/Unavailable (400)", async () => {
+  const mockUserId = new mongoose.Types.ObjectId().toString();
+  const mockAddressId = new mongoose.Types.ObjectId().toString();
+
+  Address.findOne = async () => ({
+    _id: mockAddressId,
+    userId: mockUserId,
+    flatNo: "123",
+    street: "Test St",
+    city: "Test City",
+    district: "Test District",
+    state: "Test State",
+    pincode: "110001",
+    country: "India",
+  });
+
   const req = {
     body: {
       product_id: new mongoose.Types.ObjectId().toString(),
       quantity: 1,
-      address: "123 Test St",
-      user_id: new mongoose.Types.ObjectId().toString(),
+      addressId: mockAddressId,
+      user_id: mockUserId,
     },
   };
   const res = makeMockRes();
@@ -154,12 +204,27 @@ test("Create Order API - Product Out of Stock/Unavailable (400)", async () => {
 });
 
 test("Create Order API - Invalid Quantity (400)", async () => {
+  const mockUserId = new mongoose.Types.ObjectId().toString();
+  const mockAddressId = new mongoose.Types.ObjectId().toString();
+
+  Address.findOne = async () => ({
+    _id: mockAddressId,
+    userId: mockUserId,
+    flatNo: "123",
+    street: "Test St",
+    city: "Test City",
+    district: "Test District",
+    state: "Test State",
+    pincode: "110001",
+    country: "India",
+  });
+
   const req = {
     body: {
       product_id: new mongoose.Types.ObjectId().toString(),
       quantity: -5,
-      address: "123 Test St",
-      user_id: new mongoose.Types.ObjectId().toString(),
+      addressId: mockAddressId,
+      user_id: mockUserId,
     },
   };
   const res = makeMockRes();
@@ -350,6 +415,21 @@ test("Webhook & Verify - Merchant OS Verify Call Failure (Leaves Pending)", asyn
 });
 
 test("Create Order API - Multi-item Cart (201)", async () => {
+  const mockUserId = new mongoose.Types.ObjectId().toString();
+  const mockAddressId = new mongoose.Types.ObjectId().toString();
+
+  Address.findOne = async () => ({
+    _id: mockAddressId,
+    userId: mockUserId,
+    flatNo: "456",
+    street: "Test Ave",
+    city: "Test City",
+    district: "Test District",
+    state: "Test State",
+    pincode: "110001",
+    country: "India",
+  });
+
   const pid1 = new mongoose.Types.ObjectId().toString();
   const pid2 = new mongoose.Types.ObjectId().toString();
   const req = {
@@ -358,8 +438,8 @@ test("Create Order API - Multi-item Cart (201)", async () => {
         { product_id: pid1, quantity: 1 },
         { product_id: pid2, quantity: 2 },
       ],
-      address: "456 Test Ave",
-      user_id: new mongoose.Types.ObjectId().toString(),
+      addressId: mockAddressId,
+      user_id: mockUserId,
     },
   };
   const res = makeMockRes();

@@ -7,16 +7,26 @@ import { Plus } from "lucide-react";
 export default function Address() {
   const [setMode, setSetMode] = useState(false);
   const { addresses, addAddress, removeAddress } = useAddresses();
-  const [orderAddress, setOrderAddress] = useState(false);
+  const [orderAddress, setOrderAddress] = useState(null);
+
+  const handleSaveNewAddress = (newAddr) => {
+    const success = addAddress(newAddr);
+    if (success !== false) {
+      setOrderAddress(newAddr);
+      setSetMode(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
       {setMode ? (
-        <InputAddress onBack={() => setSetMode(false)} onSave={addAddress} />
+        <InputAddress onBack={() => setSetMode(false)} onSave={handleSaveNewAddress} />
       ) : (
         <div className="space-y-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-foreground">Select Delivery Address</h2>
+            <h2 className="text-2xl font-bold text-foreground">
+              {orderAddress ? "Confirm Order" : "Select Delivery Address"}
+            </h2>
             {!orderAddress && (
               <button
                 onClick={() => setSetMode(true)}

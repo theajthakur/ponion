@@ -25,9 +25,11 @@ const getOrderById = async (req, res) => {
 
 const mongoose = require("mongoose");
 
+const Address = require("../../models/Address");
+
 const createMerchantOrder = async (req, res) => {
     try {
-        const { cart, product_id, quantity, coupon_code, address, user_id } = req.body;
+        const { cart, product_id, quantity, coupon_code, addressId, address_id, user_id } = req.body;
 
         // Parse and support both cart list and single product backward compatibility
         const cartItems = [];
@@ -54,14 +56,47 @@ const createMerchantOrder = async (req, res) => {
             }
         }
 
-        if (!address) {
-            return res.status(400).json({ success: false, message: "address is required" });
-        }
-
-        const userId = user_id || (req.user && req.user._id);
+        const userId = user_id || (req.user && (req.user._id || req.user.id));
         if (!userId) {
             return res.status(400).json({ success: false, message: "user_id is required" });
         }
+
+        const targetAddressId = addressId || address_id;
+        if (!targetAddressId) {
+            return res.status(400).json({
+                success: false,
+                error: "INVALID_ADDRESS",
+                message: "Address not found for this user",
+            });
+        }
+
+        let addressDoc = null;
+        try {
+            addressDoc = await Address.findOne({ _id: targetAddressId, userId });
+        } catch (err) {
+            addressDoc = null;
+        }
+
+        if (!addressDoc || String(addressDoc.userId) !== String(userId)) {
+            return res.status(400).json({
+                success: false,
+                error: "INVALID_ADDRESS",
+                message: "Address not found for this user",
+            });
+        }
+
+        const addressSnapshot = {
+            addressId: addressDoc._id,
+            label: addressDoc.label,
+            flatNo: addressDoc.flatNo,
+            street: addressDoc.street,
+            landmark: addressDoc.landmark,
+            city: addressDoc.city,
+            district: addressDoc.district,
+            state: addressDoc.state,
+            pincode: addressDoc.pincode,
+            country: addressDoc.country,
+        };
 
         // Fetch products from database in a single query (filtering for valid ObjectIds only)
         const validProductIds = cartItems
@@ -140,7 +175,7 @@ const createMerchantOrder = async (req, res) => {
                     merchantOrderId: dbMerchantOrderId,
                     unitPrice: product.price,
                     couponCode: coupon_code || undefined,
-                    address,
+                    address: addressSnapshot,
                 })
             );
         }

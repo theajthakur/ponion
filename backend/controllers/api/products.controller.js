@@ -50,7 +50,7 @@ const searchProducts = async (req, res) => {
     // Diet type filter (e.g. dietType=veg,egg or individual boolean flags)
     const dietTypesList = [];
     if (dietType) {
-      const types = dietType.split(",").map((t) => t.trim().toLowerCase());
+      const types = dietType.split(",").map((t) => t.trim());
       dietTypesList.push(...types);
     }
     if (veg === "true" || veg === true) {

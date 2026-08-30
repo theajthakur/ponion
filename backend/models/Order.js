@@ -40,7 +40,7 @@ const OrderSchema = mongoose.Schema(
       type: String,
     },
     address: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
     },
     razorpayPaymentId: {
       type: String,

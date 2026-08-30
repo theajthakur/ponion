@@ -51,6 +51,8 @@ const profileRoute = require("./routes/user/profile.route");
 const paymentRoute = require("./routes/user/payment.route");
 app.use("/user/profile", profileRoute);
 app.use("/user/payments", paymentRoute);
+const addressRoute = require("./routes/user/address.route");
+app.use("/user/addresses", addressRoute);
 const orderRoute = require("./routes/user/order.route");
 app.use("/user/", orderRoute);
 
