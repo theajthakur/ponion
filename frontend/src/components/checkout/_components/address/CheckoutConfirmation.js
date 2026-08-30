@@ -107,15 +107,17 @@ export default function CheckoutConfirmation({ address, onChange }) {
               <div className="space-y-1">
                 <h3 className="font-bold text-lg text-foreground">Delivery Address</h3>
                 <p className="text-secondary leading-relaxed">
-                  {address.Name}, {address.Flat}, {address.Landmark}, {address.Area}
+                  {address.Name ? `${address.Name}, ` : ""}{address.flatNo || address.Flat}, {address.street || address.Area}{(address.landmark || address.Landmark) ? `, ${address.landmark || address.Landmark}` : ""}
                 </p>
                 <p className="text-secondary">
-                  {address.District}, {address.State} - <span className="font-semibold">{address.PinCode}</span>
+                  {address.city ? `${address.city}, ` : ""}{address.district || address.District}, {address.state || address.State} - <span className="font-semibold">{address.pincode || address.PinCode}</span>
                 </p>
-                <p className="text-muted text-sm font-medium mt-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                  {address.Mobile}
-                </p>
+                {address.Mobile && (
+                  <p className="text-muted text-sm font-medium mt-2 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    {address.Mobile}
+                  </p>
+                )}
               </div>
             </div>
 

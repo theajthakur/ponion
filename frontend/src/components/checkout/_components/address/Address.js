@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SavedAddresses from "./SavedAddress";
 import InputAddress from "./InputAddress";
 import useAddresses from "./utils";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 
 export default function Address() {
   const [setMode, setSetMode] = useState(false);
-  const { addresses, addAddress, removeAddress } = useAddresses();
+  const { addresses, loading, addAddress, removeAddress } = useAddresses();
   const [orderAddress, setOrderAddress] = useState(null);
 
-  const handleSaveNewAddress = (newAddr) => {
-    const success = addAddress(newAddr);
-    if (success !== false) {
-      setOrderAddress(newAddr);
+  const handleSaveNewAddress = async (newAddr) => {
+    const savedAddress = await addAddress(newAddr);
+    if (savedAddress) {
+      setOrderAddress(savedAddress);
       setSetMode(false);
     }
   };
@@ -37,12 +37,19 @@ export default function Address() {
             )}
           </div>
 
-          <SavedAddresses
-            addresses={addresses}
-            orderAddress={orderAddress}
-            setOrderAddress={setOrderAddress}
-            setSetMode={setSetMode}
-          />
+          {loading ? (
+            <div className="flex justify-center items-center py-16 bg-surface rounded-2xl border border-border">
+              <Loader2 className="animate-spin text-primary w-8 h-8" />
+            </div>
+          ) : (
+            <SavedAddresses
+              addresses={addresses}
+              orderAddress={orderAddress}
+              setOrderAddress={setOrderAddress}
+              setSetMode={setSetMode}
+              removeAddress={removeAddress}
+            />
+          )}
         </div>
       )}
     </div>

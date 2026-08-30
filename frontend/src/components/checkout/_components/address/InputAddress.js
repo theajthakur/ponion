@@ -1,58 +1,69 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowLeftSquare, MapPin, Save } from "lucide-react";
+import { ArrowLeftSquare, MapPin, Save, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function InputAddress({ onSave, onBack }) {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    Name: "",
-    Mobile: "",
-    Flat: "",
-    Landmark: "",
-    Area: "",
-    PinCode: "",
-    District: "",
-    State: "",
-    Label: "Home",
+    label: "Home",
+    flatNo: "",
+    street: "",
+    landmark: "",
+    city: "",
+    district: "",
+    state: "",
+    pincode: "",
+    isDefault: false,
   });
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const emptyField = Object.entries(formData).find(
-      ([_, v]) => v.trim() === ""
-    );
-    if (emptyField) {
-      alert(`Please fill ${emptyField[0]}`);
+
+    const requiredFields = [
+      { key: "flatNo", label: "Flat / House No" },
+      { key: "street", label: "Street / Area" },
+      { key: "city", label: "City" },
+      { key: "district", label: "District" },
+      { key: "state", label: "State" },
+      { key: "pincode", label: "Pincode" },
+    ];
+
+    for (const field of requiredFields) {
+      if (!formData[field.key] || !formData[field.key].trim()) {
+        toast.error(`Please enter ${field.label}`);
+        return;
+      }
+    }
+
+    const pinRegex = /^[1-9][0-9]{5}$/;
+    if (!pinRegex.test(formData.pincode.trim())) {
+      toast.error("Please enter a valid 6-digit Indian PIN Code");
       return;
     }
-    onSave?.({ id: Date.now(), ...formData });
-    setFormData({
-      Name: "",
-      Mobile: "",
-      Flat: "",
-      Landmark: "",
-      Area: "",
-      PinCode: "",
-      District: "",
-      State: "",
-      Label: "Home",
-    });
-  };
 
-  const fields = [
-    "Name",
-    "Mobile",
-    "Flat",
-    "Landmark",
-    "Area",
-    "PinCode",
-    "District",
-    "State",
-  ];
+    setLoading(true);
+    try {
+      await onSave?.({
+        label: formData.label.trim(),
+        flatNo: formData.flatNo.trim(),
+        street: formData.street.trim(),
+        landmark: formData.landmark.trim(),
+        city: formData.city.trim(),
+        district: formData.district.trim(),
+        state: formData.state.trim(),
+        pincode: formData.pincode.trim(),
+        isDefault: formData.isDefault,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <form
@@ -79,43 +90,139 @@ export default function InputAddress({ onSave, onBack }) {
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6">
-        {fields.map((field) => (
-          <div key={field} className="space-y-2">
-            <label className="text-sm font-semibold text-foreground ml-1">
-              {field}
-            </label>
-            <input
-              type={field === "Mobile" || field === "PinCode" ? "number" : "text"}
-              value={formData[field]}
-              onChange={(e) => handleChange(field, e.target.value)}
-              placeholder={`Enter ${field}`}
-              className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
-            />
-          </div>
-        ))}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            Address Label / Type *
+          </label>
+          <select
+            value={formData.label}
+            onChange={(e) => handleChange("label", e.target.value)}
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white cursor-pointer"
+          >
+            <option value="Home">Home</option>
+            <option value="Office">Office</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
         <div className="space-y-2">
           <label className="text-sm font-semibold text-foreground ml-1">
-            Address Type
+            Flat / House / Building No. *
           </label>
-          <select
-            value={formData.Label}
-            onChange={(e) => handleChange("Label", e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white cursor-pointer appearance-none"
-          >
-            <option>Home</option>
-            <option>Office</option>
-            <option>Other</option>
-          </select>
+          <input
+            type="text"
+            value={formData.flatNo}
+            onChange={(e) => handleChange("flatNo", e.target.value)}
+            placeholder="e.g. Flat 402, Sunshine Apartments"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
         </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            Street / Area / Locality *
+          </label>
+          <input
+            type="text"
+            value={formData.street}
+            onChange={(e) => handleChange("street", e.target.value)}
+            placeholder="e.g. 10th Main Road, Indiranagar"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            Landmark (Optional)
+          </label>
+          <input
+            type="text"
+            value={formData.landmark}
+            onChange={(e) => handleChange("landmark", e.target.value)}
+            placeholder="e.g. Near Metro Station"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            City / Town *
+          </label>
+          <input
+            type="text"
+            value={formData.city}
+            onChange={(e) => handleChange("city", e.target.value)}
+            placeholder="e.g. Bengaluru"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            District *
+          </label>
+          <input
+            type="text"
+            value={formData.district}
+            onChange={(e) => handleChange("district", e.target.value)}
+            placeholder="e.g. Bengaluru Urban"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            State *
+          </label>
+          <input
+            type="text"
+            value={formData.state}
+            onChange={(e) => handleChange("state", e.target.value)}
+            placeholder="e.g. Karnataka"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-foreground ml-1">
+            PIN Code (6 digits) *
+          </label>
+          <input
+            type="text"
+            maxLength={6}
+            value={formData.pincode}
+            onChange={(e) => handleChange("pincode", e.target.value)}
+            placeholder="e.g. 560038"
+            className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-surface hover:bg-white"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 pt-2">
+        <input
+          type="checkbox"
+          id="isDefault"
+          checked={formData.isDefault}
+          onChange={(e) => handleChange("isDefault", e.target.checked)}
+          className="w-4 h-4 text-primary rounded focus:ring-primary cursor-pointer"
+        />
+        <label htmlFor="isDefault" className="text-sm font-medium text-secondary cursor-pointer">
+          Set as default delivery address
+        </label>
       </div>
 
       <div className="pt-6 flex justify-end border-t border-border mt-6">
         <button
           type="submit"
-          className="flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-xl hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40 font-bold text-lg hover:-translate-y-0.5"
+          disabled={loading}
+          className="flex items-center gap-2 bg-primary text-white px-8 py-3 rounded-xl hover:bg-primary-hover transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40 font-bold text-lg hover:-translate-y-0.5 disabled:opacity-50"
         >
-          <Save size={20} /> Save Address
+          {loading ? (
+            <Loader2 size={20} className="animate-spin" />
+          ) : (
+            <Save size={20} />
+          )}
+          <span>Save Address</span>
         </button>
       </div>
     </form>
