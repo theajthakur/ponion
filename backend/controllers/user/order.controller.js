@@ -31,6 +31,8 @@ const createMerchantOrder = async (req, res) => {
     try {
         const { cart, product_id, quantity, coupon_code, addressId, address_id, user_id } = req.body;
 
+        console.log(`[Merchant OS Order] 📦 Incoming create order request: user_id=${user_id || (req.user && (req.user._id || req.user.id))}, address_id=${addressId || address_id}`);
+
         // Parse and support both cart list and single product backward compatibility
         const cartItems = [];
         if (cart && Array.isArray(cart)) {
@@ -46,23 +48,27 @@ const createMerchantOrder = async (req, res) => {
         }
 
         if (cartItems.length === 0) {
+            console.warn("[Merchant OS Order] ⚠️ Order creation rejected: cart is required and must not be empty.");
             return res.status(400).json({ success: false, message: "cart is required and must not be empty" });
         }
 
         // Validate quantities
         for (const item of cartItems) {
             if (item.quantity === undefined || typeof item.quantity !== "number" || item.quantity <= 0) {
+                console.warn(`[Merchant OS Order] ⚠️ Order creation rejected: invalid item quantity (${item.quantity}).`);
                 return res.status(400).json({ success: false, message: "quantity must be a number greater than 0" });
             }
         }
 
         const userId = user_id || (req.user && (req.user._id || req.user.id));
         if (!userId) {
+            console.warn("[Merchant OS Order] ⚠️ Order creation rejected: user_id is required.");
             return res.status(400).json({ success: false, message: "user_id is required" });
         }
 
         const targetAddressId = addressId || address_id;
         if (!targetAddressId) {
+            console.warn(`[Merchant OS Order] ⚠️ Order creation rejected: address_id missing for userId=${userId}.`);
             return res.status(400).json({
                 success: false,
                 error: "INVALID_ADDRESS",
@@ -78,6 +84,7 @@ const createMerchantOrder = async (req, res) => {
         }
 
         if (!addressDoc || String(addressDoc.userId) !== String(userId)) {
+            console.warn(`[Merchant OS Order] ⚠️ Order creation rejected: address ${targetAddressId} not found or not owned by user ${userId}.`);
             return res.status(400).json({
                 success: false,
                 error: "INVALID_ADDRESS",
@@ -131,6 +138,8 @@ const createMerchantOrder = async (req, res) => {
                 simulated_total += price * item.quantity;
             }
 
+            console.log(`[Merchant OS Order] ℹ️ Simulated order created for missing products: merchant_order_id=${merchant_order_id}, simulated_total=${simulated_total}`);
+
             return res.status(200).json({
                 success: true,
                 message: `endpoint working and simulate ${cartItems.length} items`,
@@ -144,9 +153,11 @@ const createMerchantOrder = async (req, res) => {
         for (const item of cartItems) {
             const product = productMap[item.product_id.toString()];
             if (product.available === false) {
+                console.warn(`[Merchant OS Order] ⚠️ Product ${item.product_id} is unavailable.`);
                 return res.status(400).json({ success: false, message: "Product is not available or out of stock" });
             }
             if (product.stock !== undefined && product.stock < item.quantity) {
+                console.warn(`[Merchant OS Order] ⚠️ Product ${item.product_id} has insufficient stock (req=${item.quantity}, stock=${product.stock}).`);
                 return res.status(400).json({ success: false, message: "Product is not available or out of stock" });
             }
         }
@@ -182,6 +193,8 @@ const createMerchantOrder = async (req, res) => {
 
         await Promise.all(orderPromises);
 
+        console.log(`✅ [Merchant OS Order] Order created successfully: merchant_order_id=${merchant_order_id}, itemsCount=${cartItems.length}, order_total=${order_total}`);
+
         if (coupon_code) {
             // TODO: real coupon service
         }
@@ -193,6 +206,7 @@ const createMerchantOrder = async (req, res) => {
             order_total,
         });
     } catch (error) {
+        console.error(`❌ [Merchant OS Order] Error processing order:`, error.message);
         return res.status(500).json({ success: false, message: error.message });
     }
 };
