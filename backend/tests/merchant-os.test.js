@@ -13,6 +13,7 @@ const WebhookEvent = require("../models/WebhookEvent");
 const Address = require("../models/Address");
 const { createMerchantOrder } = require("../controllers/user/order.controller");
 const { handleWebhook, verifyOrder } = require("../controllers/webhook/merchant-os.controller");
+const { getOrderAmountByMerchantOrderId } = require("../controllers/user/payment.controller");
 
 // Helper to mock Express response
 const makeMockRes = () => {
@@ -558,3 +559,77 @@ test("Webhook & Verify - Multi-item Cart (Happy Path)", async () => {
   assert.strictEqual(mockOrder2.status, "confirmed");
   assert.strictEqual(mockOrder2.razorpayPaymentId, "pay_multi_id");
 });
+
+test("getOrderAmountByMerchantOrderId - Single Item (200)", async () => {
+  const req = {
+    params: { merchantOrderId: "ORD-SINGLE-123" },
+    query: {},
+  };
+  const res = makeMockRes();
+
+  Order.find = async (query) => {
+    return [{ merchantOrderId: "ORD-SINGLE-123", price: 250, status: "pending" }];
+  };
+
+  await getOrderAmountByMerchantOrderId(req, res);
+
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.body.success, true);
+  assert.strictEqual(res.body.merchantOrderId, "ORD-SINGLE-123");
+  assert.strictEqual(res.body.amount, 250);
+  assert.strictEqual(res.body.order_total, 250);
+  assert.strictEqual(res.body.status, "pending");
+  assert.strictEqual(res.body.itemsCount, 1);
+});
+
+test("getOrderAmountByMerchantOrderId - Multi Item (200)", async () => {
+  const req = {
+    params: {},
+    query: { merchant_order_id: "ORD-MULTI-456" },
+  };
+  const res = makeMockRes();
+
+  Order.find = async (query) => {
+    return [
+      { merchantOrderId: "ORD-MULTI-456-0", price: 150, status: "pending" },
+      { merchantOrderId: "ORD-MULTI-456-1", price: 350, status: "pending" },
+    ];
+  };
+
+  await getOrderAmountByMerchantOrderId(req, res);
+
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(res.body.success, true);
+  assert.strictEqual(res.body.merchantOrderId, "ORD-MULTI-456");
+  assert.strictEqual(res.body.amount, 500);
+  assert.strictEqual(res.body.order_total, 500);
+  assert.strictEqual(res.body.itemsCount, 2);
+});
+
+test("getOrderAmountByMerchantOrderId - Missing merchantOrderId (400)", async () => {
+  const req = { params: {}, query: {} };
+  const res = makeMockRes();
+
+  await getOrderAmountByMerchantOrderId(req, res);
+
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(res.body.success, false);
+  assert.strictEqual(res.body.message, "merchantOrderId is required");
+});
+
+test("getOrderAmountByMerchantOrderId - Order Not Found (404)", async () => {
+  const req = {
+    params: { merchantOrderId: "ORD-NONEXISTENT" },
+    query: {},
+  };
+  const res = makeMockRes();
+
+  Order.find = async () => [];
+
+  await getOrderAmountByMerchantOrderId(req, res);
+
+  assert.strictEqual(res.statusCode, 404);
+  assert.strictEqual(res.body.success, false);
+  assert.strictEqual(res.body.message, "Order not found");
+});
+

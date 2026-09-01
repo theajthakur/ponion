@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const Menu = require("../../models/Menu");
 const Order = require("../../models/Order");
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_SECRET,
+  key_id: process.env.RAZORPAY_KEY_ID || "dummy_key",
+  key_secret: process.env.RAZORPAY_SECRET || "dummy_secret",
 });
 
 const razorpayProceed = async (amount) => {
@@ -170,4 +170,60 @@ const handleVerifyPayment = async (req, res) => {
   }
 };
 
-module.exports = { handlePlaceOrder, handleVerifyPayment, razorpay };
+const getOrderAmountByMerchantOrderId = async (req, res) => {
+  try {
+    const merchantOrderId =
+      req.params.merchantOrderId ||
+      req.params.merchant_order_id ||
+      req.query.merchantOrderId ||
+      req.query.merchant_order_id;
+
+    if (!merchantOrderId) {
+      return res.status(400).json({
+        success: false,
+        message: "merchantOrderId is required",
+      });
+    }
+
+    const escapedId = merchantOrderId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const orders = await Order.find({
+      $or: [
+        { merchantOrderId: merchantOrderId },
+        { merchantOrderId: { $regex: `^${escapedId}-` } },
+      ],
+    });
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    const amount = orders.reduce((sum, order) => sum + (order.price || 0), 0);
+
+    return res.status(200).json({
+      success: true,
+      merchantOrderId,
+      merchant_order_id: merchantOrderId,
+      amount,
+      order_total: amount,
+      currency: "INR",
+      status: orders[0].status,
+      itemsCount: orders.length,
+    });
+  } catch (error) {
+    console.error("Error in getOrderAmountByMerchantOrderId:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+module.exports = {
+  handlePlaceOrder,
+  handleVerifyPayment,
+  getOrderAmountByMerchantOrderId,
+  razorpay,
+};
